@@ -9,7 +9,8 @@ namespace TOOLS
     enum class Component
     {
         Global,
-        Login
+        Login,
+        JSONReader
     };
     template<typename T = const char*>
     class Exceptions

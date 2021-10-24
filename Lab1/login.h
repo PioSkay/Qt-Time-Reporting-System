@@ -4,9 +4,14 @@
 #include <QDebug>
 #include <QDialog>
 #include <QFile>
+
 #include <iostream>
 #include "Log.h"
 #include "exceptions.h"
+#include "jsonreader.h"
+
+#define USERS_CLASS_NAME QString("users")
+#define USERS_FILE_PATH QString("users.json")
 
 namespace Ui {
 class Login;
@@ -14,31 +19,35 @@ class Login;
 
 enum class LoginErrors
 {
-    CouldNotOpenFIle
+    CouldNotOpenFIle,
+    UserNotFound,
+    UsernameFound,
+    IncorrectPassward,
+    PasswardsDoesNotMath,
+    ToSmallPassward
 };
 
-class Users
+class Users: public JSONReader
 {
-    bool createNewFile()
+public:
+    Users():
+        JSONReader(USERS_FILE_PATH, USERS_CLASS_NAME)
     {
 
     }
-    bool initExistingFile()
+    void loginUser(const QString& username, const QString& passward)
     {
-        QFile file("users.json");
-        if(!file.open(QIODevice::ReadWrite | QIODevice::Text))
-        {
-            throw TOOLS::Exceptions<LoginErrors>(LoginErrors::CouldNotOpenFIle);
-        }
+
     }
-public:
-    Users()
+    void registerUser(const QString& username, const QString& passward, const QString& r_passward)
     {
-        Log(1) << "Creating users class.";
-        try {
-            initExistingFile();
-        }  catch (const TOOLS::Exceptions<LoginErrors>& x) {
-            Log(Error) << "Could not open a file!";
+        if(passward.size() < 6)
+        {
+            throw TOOLS::Exceptions<LoginErrors>(LoginErrors::ToSmallPassward);
+        }
+        else if(passward != r_passward)
+        {
+            throw TOOLS::Exceptions<LoginErrors>(LoginErrors::PasswardsDoesNotMath);
         }
     }
 };
@@ -58,6 +67,8 @@ public:
     }
 private:
     Ui::Login *ui;
+    void loginButton();
+    void registerButton();
 };
 
 #endif // LOGIN_H
