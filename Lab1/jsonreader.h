@@ -23,8 +23,8 @@ enum class JSONReaderErrors
 class JSONReader
 {
     QJsonArray m_array;
-    const QString& m_name;
-    const QString& m_path;
+    QString m_name;
+    QString m_path;
     JSONReaderErrors m_status;
     void open()
     {
@@ -60,9 +60,22 @@ class JSONReader
         m_array = value.toArray();
         qDebug() << "Reading array: " << m_array;
     }
+public:
     void save()
     {
+        using namespace TOOLS;
         Log(3) << "save()";
+        QFile file(m_path);
+        Log(1) << "Opening file: " << m_name.toStdString();
+        if(!file.open(QIODevice::ReadWrite | QIODevice::Text))
+        {
+            Log(Error) << "Could not open a file!";
+            throw Exceptions<JSONReaderErrors>(JSONReaderErrors::CouldNotOpen);
+        }
+        QJsonObject obj;
+        obj[m_name] = getArray();
+        file.write(QJsonDocument(obj).toJson());
+        file.close();
     }
 public:
     JSONReader(const QString& path = "", const QString& class_name = ""):
@@ -80,12 +93,34 @@ public:
     }
     QJsonArray& getArray()
     {
+        Log(3) << "getArray()";
         return m_array;
     }
-    ~JSONReader()
+    void clear()
     {
-        save();
+        Log(3) << "clear()";
+        while(m_array.size() >= 1)
+        {
+            m_array.pop_front();
+        }
     }
+    ~JSONReader() = default;
 };
-
+namespace TOOLS
+{
+    inline bool check(const QJsonArray& json, std::vector<QString> array)
+    {
+        for(const auto& ele: json)
+        {
+            for(const auto& string : array)
+            {
+                if(!ele.toObject().contains(string))
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+}
 #endif // JSONREADER_H

@@ -16,10 +16,16 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     else
     {
-
+        current_user = login_window.loggedUser();
+        init();
     }
 }
 
+void MainWindow::init()
+{
+    Log(Info) << "init()";
+    ui->user->setText("Welcome " + current_user.username());
+}
 
 
 MainWindow::~MainWindow()
