@@ -64,8 +64,15 @@ void Login::registerButton()
     }
 }
 
+bool Login::isLoggedIn() const
+{
+    return auth;
+}
 
-
+const User& Login::loggedUser() const
+{
+    return final_user;
+}
 
 Login::~Login()
 {
