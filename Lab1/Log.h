@@ -38,6 +38,8 @@
 
 #include <sstream>
 #include <list>
+#include <QString>
+
 enum LogLevel
 {
     /** Debug level message. */

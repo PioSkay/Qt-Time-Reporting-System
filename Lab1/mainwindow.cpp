@@ -25,6 +25,9 @@ void MainWindow::init()
 {
     Log(Info) << "init()";
     ui->user->setText("Welcome " + current_user.username());
+    JSONReader A("a.json", "a");
+    JSONReader B("b.json", "b");
+    TOOLS::SaveJSON::save(A, B);
 }
 
 

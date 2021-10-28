@@ -5,31 +5,15 @@ void JSONReader::open()
     Log(3) << "open()";
     QFile file(m_path);
     Log(1) << "Opening file: " << m_name.toStdString();
-    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        Log(Error) << "Could not open a file!";
-        throw Exceptions<JSONReaderErrors>(JSONReaderErrors::CouldNotOpen);
-    }
+    LOG_THROW_ERROR_IF("Could not open a file!", !file.open(QIODevice::ReadOnly | QIODevice::Text), JSONReaderErrors, JSONReaderErrors::CouldNotOpen);
     QByteArray jsonData = file.readAll();
     file.close();
     QJsonDocument document = QJsonDocument::fromJson(jsonData);
-    if(document.isNull())
-    {
-        Log(Error) << "Could not create a document!";
-        throw Exceptions<JSONReaderErrors>(JSONReaderErrors::CouldNotCreateDocument);
-    }
-    if(!document.isObject())
-    {
-        Log(Error) << "Document is not an object!";
-        throw Exceptions<JSONReaderErrors>(JSONReaderErrors::DocumentInNotAnObject);
-    }
+    LOG_THROW_ERROR_IF("Could not create a document!", document.isNull(), JSONReaderErrors, JSONReaderErrors::CouldNotCreateDocument);
+    LOG_THROW_ERROR_IF("Document is not an object!", !document.isObject(), JSONReaderErrors, JSONReaderErrors::DocumentInNotAnObject);
     QJsonObject object = document.object();
     QJsonValue value = object.value(m_name);
-    if(value.isUndefined())
-    {
-        Log(Error) << "Could not find an class name in the JSON file";
-        throw Exceptions<JSONReaderErrors>(JSONReaderErrors::CouldNotFindName);
-    }
+    LOG_THROW_ERROR_IF("Could not find an class name in the JSON file", value.isUndefined(), JSONReaderErrors, JSONReaderErrors::CouldNotFindName);
     m_array = value.toArray();
     qDebug() << "Reading array: " << m_array;
 }
@@ -53,6 +37,24 @@ QJsonArray& JSONReader::getArray()
     return m_array;
 }
 
+const QJsonArray& JSONReader::getArray() const
+{
+    Log(3) << "getArray()";
+    return m_array;
+}
+
+const QString& JSONReader::getPath() const
+{
+    Log(3) << "getPath()";
+    return m_path;
+}
+
+const QString& JSONReader::getName() const
+{
+    Log(3) << "getName()";
+    return m_name;
+}
+
 void JSONReader::clear()
 {
     Log(3) << "clear()";
@@ -68,11 +70,7 @@ void JSONReader::save()
     Log(3) << "save()";
     QFile file(m_path);
     Log(1) << "Opening file: " << m_name.toStdString();
-    if(!file.open(QIODevice::ReadWrite | QIODevice::Text))
-    {
-        Log(Error) << "Could not open a file!";
-        throw Exceptions<JSONReaderErrors>(JSONReaderErrors::CouldNotOpen);
-    }
+    LOG_THROW_ERROR_IF("Could not open a file!", !file.open(QIODevice::ReadWrite | QIODevice::Text), JSONReaderErrors, JSONReaderErrors::CouldNotOpen);
     QJsonObject obj;
     obj[m_name] = getArray();
     file.write(QJsonDocument(obj).toJson());
@@ -95,4 +93,8 @@ namespace TOOLS
         }
         return true;
     }
+    QJsonObject* SaveJSON::m_obj = nullptr;
+    QString SaveJSON::m_path = "";
+    bool SaveJSON::info = false;
+
 }

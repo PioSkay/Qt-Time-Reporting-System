@@ -2,6 +2,7 @@
 #define EXCEPTIONS_H
 
 #include<string>
+#include"Log.h"
 
 namespace TOOLS {
     enum class Component
@@ -14,8 +15,14 @@ namespace TOOLS {
     class Exceptions;
 }
 
+#define LOG_THROW_ERROR_IF(msg, cond, type, what) \
+    if(cond) {                                    \
+        Log(Error) << msg;                        \
+        THROW_ERROR(type, what)                   \
+    }
+
 #define THROW_ERROR_IF(cond, type, what) \
-    if(cond){                                  \
+    if(cond){                            \
          THROW_ERROR(type, what)         \
     }
 
@@ -24,7 +31,6 @@ namespace TOOLS {
 
 namespace TOOLS
 {
-    //Components of the UI
     template<typename T>
     class Exceptions
     {
