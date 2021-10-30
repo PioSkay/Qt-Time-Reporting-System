@@ -28,6 +28,11 @@ namespace TOOLS {
 
 #define THROW_ERROR(type, what) throw TOOLS::Exceptions<type>(what);
 
+#define THROW_DEFAULT(cond, msg)        \
+    if(cond) {                          \
+        THROW_ERROR(const char*, msg)   \
+    }
+#define DEFAULT_CATCH TOOLS::Exceptions<const char*>
 
 namespace TOOLS
 {

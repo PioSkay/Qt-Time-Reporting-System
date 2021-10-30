@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    /*
     login_window.exec();
     if(!login_window.isLoggedIn())
     {
@@ -15,19 +16,31 @@ MainWindow::MainWindow(QWidget *parent) :
         QTimer::singleShot(0, this, SLOT(close()));
     }
     else
+    */
     {
-        current_user = login_window.loggedUser();
+        current_user = User("11");// login_window.loggedUser();
+        initJSON();
         init();
     }
 }
 
 void MainWindow::init()
 {
+    //Setting style
+    ui->your_projects->setFrameStyle(QFrame::Box);
+    ui->your_projects->setLineWidth(2);
+    //ui->your_projects->setFrameShape(QFrame::StyledPanel);
+
     Log(Info) << "init()";
     ui->user->setText("Welcome " + current_user.username());
-    JSONReader A("a.json", "a");
+    JSONReader A("a.json", "a", {(QString)"username", (QString)"password"});
     JSONReader B("b.json", "b");
-    TOOLS::SaveJSON::save(A, B);
+    try {
+        TOOLS::SaveJSON::save(A, B);
+    }  catch (const TOOLS::Exceptions<JSONSaveErrors>& er) {
+        Log(Error) << "er.what()";
+    }
+    current_user.setup_activities(this);
 }
 
 
