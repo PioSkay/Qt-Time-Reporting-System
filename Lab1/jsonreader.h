@@ -31,6 +31,7 @@ enum class JSONSaveErrors
 class JSONReader
 {
     QJsonArray m_array;
+    QJsonObject m_object;
     QString m_name;
     QString m_path;
     JSONReaderErrors m_status;
@@ -39,7 +40,19 @@ class JSONReader
 public:
     JSONReader(const QString& path = "", const QString& class_name = "", std::initializer_list<QString> check = {}, bool initNow = true);
     QJsonArray& getArray();
+    void update()
+    {
+        m_object[m_name] = m_array;
+    }
+    void setArray(const QJsonArray& newArray)
+    {
+        m_array = newArray;
+    }
     const QJsonArray& getArray() const;
+    const QJsonObject& getObject() const
+    {
+        return m_object;
+    }
     const QString& getName() const;
     const QString& getPath() const;
     JSONReaderErrors getStatus() const;
@@ -77,6 +90,25 @@ namespace TOOLS
     void SaveJSON::save(Args&& ... args)
     {
         save(std::forward<Args>(args) ...);
+    }
+    template<typename Type, typename What, typename Where>
+    static int setup(What& what, Where& where)
+    {
+        int problems = 0;
+        for(const auto& element : what)
+        {
+            const auto& obj = element.toObject();
+            try {
+                Type activity(obj);
+                Log(10) << activity;
+                where.emplace_back(std::make_shared<Type>(std::move(activity)));
+            } catch(DEFAULT_CATCH x) {
+                Log(Error) << "There was a problem during activity creation: " << x.what();
+                ++problems;
+                continue;
+            }
+        }
+        return problems;
     }
 }
 #endif // JSONREADER_H

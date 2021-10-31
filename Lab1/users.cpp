@@ -1,12 +1,15 @@
 #include "users.h"
 
 Users::Users():
-    JSONReader(USERS_FILE_PATH, USERS_CLASS_NAME)
+    JSONReader(USERS_FILE_PATH, USERS_CLASS_NAME, {"username", "password"})
 {
-    if(!TOOLS::check(getArray(), {"username", "password"}))
+    if(getStatus() == JSONReaderErrors::None)
     {
-        Log(Error) << "Json file is corrupted!";
-        clear();
+        const auto& x = getArray();
+        for(const auto& y : x)
+        {
+            users.push_back(y["username"].toString());
+        }
     }
 }
 User Users::loginUser(const QString& username, const QString& password)

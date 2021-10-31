@@ -11,10 +11,13 @@ void JSONReader::open()
     QJsonDocument document = QJsonDocument::fromJson(jsonData);
     LOG_THROW_ERROR_IF("Could not create a document!", document.isNull(), JSONReaderErrors, JSONReaderErrors::CouldNotCreateDocument);
     LOG_THROW_ERROR_IF("Document is not an object!", !document.isObject(), JSONReaderErrors, JSONReaderErrors::DocumentInNotAnObject);
-    QJsonObject object = document.object();
-    QJsonValue value = object.value(m_name);
-    LOG_THROW_ERROR_IF("Could not find an class name in the JSON file", value.isUndefined(), JSONReaderErrors, JSONReaderErrors::CouldNotFindName);
-    m_array = value.toArray();
+    m_object = document.object();
+    if(m_name.size() != 0)
+    {
+        QJsonValue value = m_object.value(m_name);
+        LOG_THROW_ERROR_IF("Could not find an class name in the JSON file", value.isUndefined(), JSONReaderErrors, JSONReaderErrors::CouldNotFindName);
+        m_array = value.toArray();
+    }
 }
 
 JSONReader::JSONReader(const QString& path, const QString& class_name, std::initializer_list<QString> check, bool initNow):
@@ -103,28 +106,21 @@ void JSONReader::save()
     Log(1) << "Opening file: " << m_name.toStdString();
     LOG_THROW_ERROR_IF("Could not open a file!", !file.open(QIODevice::ReadWrite | QIODevice::Text), JSONReaderErrors, JSONReaderErrors::CouldNotOpen);
     file.resize(0);
-    QJsonObject obj;
-    obj[m_name] = getArray();
-    file.write(QJsonDocument(obj).toJson());
+    if(m_name.size() > 0)
+    {
+        QJsonObject obj;
+        obj[m_name] = getArray();
+        file.write(QJsonDocument(obj).toJson());
+    }
+    else
+    {
+        file.write(QJsonDocument(m_object).toJson());
+    }
     file.close();
 }
 
 namespace TOOLS
 {
-    bool check(const QJsonArray& json, std::vector<QString> array)
-    {
-        for(const auto& ele: json)
-        {
-            for(const auto& string : array)
-            {
-                if(!ele.toObject().contains(string))
-                {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
     QJsonObject* SaveJSON::m_obj = nullptr;
     QString SaveJSON::m_path = "";
     bool SaveJSON::info = false;

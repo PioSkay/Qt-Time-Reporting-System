@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "file_pipeline.h"
 
 #include <QTimer>
 
@@ -19,8 +20,9 @@ MainWindow::MainWindow(QWidget *parent) :
     */
     {
         current_user = User("11");// login_window.loggedUser();
-        initJSON();
+        initJSON(login_window.getUsers().getUsers());
         init();
+        debug();
     }
 }
 
@@ -33,14 +35,8 @@ void MainWindow::init()
 
     Log(Info) << "init()";
     ui->user->setText("Welcome " + current_user.username());
-    JSONReader A("a.json", "a", {(QString)"username", (QString)"password"});
-    JSONReader B("b.json", "b");
-    try {
-        TOOLS::SaveJSON::save(A, B);
-    }  catch (const TOOLS::Exceptions<JSONSaveErrors>& er) {
-        Log(Error) << "er.what()";
-    }
-    current_user.setup_activities(this);
+    file x("11-2021-11.json");
+    //current_user.setup_activities(this);
 }
 
 
