@@ -74,6 +74,11 @@ const User& Login::loggedUser() const
     return final_user;
 }
 
+const Users& Login::getUsers() const
+{
+    return m_users;
+}
+
 Login::~Login()
 {
     delete ui;

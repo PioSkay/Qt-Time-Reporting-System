@@ -2,18 +2,20 @@
 #define BASE_H
 
 #include "jsonreader.h"
-#include "activities.h"
+#include "activities_pipeline.h"
+#include "user.h"
 
 class Base
 {
-    JSONReader m_activities;
-    std::list<std::shared_ptr<activities>> formated_activities;
+    activities_pipeline activities;
     std::list<QString> m_usernames;
 protected:
+    User current_user;
     void debug() const
     {
         Log(Debug) << "[formated_activities]:";
-        for(auto& x : formated_activities)
+        const auto& array = activities.getArray();
+        for(auto& x : array)
         {
             Log(Debug) << *x.get();
         }
@@ -24,32 +26,21 @@ protected:
         }
     }
 public:
-    Base():
-        m_activities("activity.json", "activities", {"code", "manager", "name", "budget", "active", "subactivities"}, false)
-    {}
+    Base() = default;
     void initJSON(const std::list<QString>& username)
     {
-        Log(3) << "initJSON()";
+        Log(3) << __FUNCTION__ << " " << __LINE__;
         m_usernames = username;
-        Log(Info) << username.size();
-        m_activities.init();
-        if(m_activities.getStatus() == JSONReaderErrors::None)
-        {
-            TOOLS::setup<activities>(m_activities.getArray(), formated_activities);
-        }
-        else
-        {
-            Log(Info) << "Could not read any activities!";
-        }
+        activities.init();
         debug();
     }
-    JSONReader& getActivities()
+    const activities_pipeline& getActivities() const
     {
-        return m_activities;
+        return activities;
     }
-    std::list<std::shared_ptr<activities>>& getActivitiesList()
+    const User& getUser() const
     {
-        return formated_activities;
+        return current_user;
     }
 };
 

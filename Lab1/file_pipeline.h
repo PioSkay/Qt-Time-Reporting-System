@@ -16,62 +16,48 @@ enum class fileError
 
 class file: public json_base
 {
+    bool isModified;
     JSONReader m_json;
-    QString m_path;
     bool isFrozen;
     QDate m_date;
     QString m_name;
     std::list<std::shared_ptr<entries>> formated_entries;
     std::list<std::shared_ptr<accepted>> formated_accepted;
+    void initExisting();
+    template<typename What, typename Where>
+    bool add(Where& where, const QJsonObject& in);
 public:
-    file(const QString& path):
-        m_json(path),
-        m_path(path)
+    file(const QString& path, bool create = false);
+    QJsonObject toJSONObject() const override;
+    bool addEntries(const QJsonObject& in);
+    bool addAccepted(const QJsonObject& in);
+    bool operator==(const file& in) const
     {
-        QString name;
-        QString date;
-        bool b = false;
-        for(int i = 0; i < path.size(); i++)
-        {
-            if(!b)
-            {
-                if(path[i] == '-')
-                {
-                    b = true;
-                    continue;
-                }
-                name += path[i];
-            }
-            else
-            {
-                date += path[i];
-            }
-        }
-        LOG_THROW_ERROR_IF("Incorrect file name", name.size() == 0, fileError, fileError::IncorrectFileName);
-        LOG_THROW_ERROR_IF("Incorrect file name", date.size() == 0, fileError, fileError::IncorrectFileName);
-        date.remove(".json");
-        Log(Info) << name.toStdString() << " " << date.toStdString();
-        QDate x = QDate::fromString(date, "yyyy-MM");
-        LOG_THROW_ERROR_IF("Could not create date", !x.isValid(), fileError, fileError::IncorrectFileName);
-        const auto& obj = m_json.getObject();
-        const auto& frozen = obj.value("frozen");
-        const auto& ent = obj.value("entries");
-        const auto& acc = obj.value("accepted");
-        LOG_THROW_ERROR_IF("Could not find frozen", !frozen.isString(), fileError, fileError::CouldNotFindFrozen);
-        LOG_THROW_ERROR_IF("Could not find entries", !ent.isArray(), fileError, fileError::CouldNotFindEntries);
-        LOG_THROW_ERROR_IF("Could not find accepted", !acc.isArray(), fileError, fileError::CouldNotFindAccepted);
-        Log(1) << "Entry check ok: " << __FUNCTION__ << ", " << __LINE__;
-        isFrozen = frozen.toString() == "True" || "true" ? true : false;
-        auto array = ent.toArray();
-        TOOLS::setup<entries>(array, formated_entries);
-        auto array2 = acc.toArray();
-        TOOLS::setup<accepted>(array2, formated_accepted);
+        return in.m_date == m_date && in.m_name == m_name;
     }
-    QJsonObject toJSONObject() const override
+    const QString& owner() const
     {
-        QJsonObject obj;
-        return obj;
+        return m_name;
     }
+    bool status() const
+    {
+        return isFrozen;
+    }
+    ~file();
 };
+
+template<typename What, typename Where>
+bool file::add(Where& where, const QJsonObject& in)
+{
+    try {
+        What obj(in);
+        where.emplace_back(std::make_shared<What>(std::move(obj)));
+    }  catch (DEFAULT_CATCH x) {
+        Log(Error) << x.what();
+        return false;
+    }
+    isModified = true;
+    return true;
+}
 
 #endif // FILE_PIPELINE_H

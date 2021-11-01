@@ -38,21 +38,14 @@ class JSONReader
     std::list<QString> m_check;
     void open();
 public:
-    JSONReader(const QString& path = "", const QString& class_name = "", std::initializer_list<QString> check = {}, bool initNow = true);
+    JSONReader(const QString& path, bool initNow = true);
+    JSONReader(const QString& path, const QString& class_name, std::initializer_list<QString> check = {}, bool initNow = true);
     QJsonArray& getArray();
-    void update()
-    {
-        m_object[m_name] = m_array;
-    }
-    void setArray(const QJsonArray& newArray)
-    {
-        m_array = newArray;
-    }
+    void update();
+    void setArray(const QJsonArray& newArray);
+    void setObject(const QJsonObject& in);
     const QJsonArray& getArray() const;
-    const QJsonObject& getObject() const
-    {
-        return m_object;
-    }
+    const QJsonObject& getObject() const;
     const QString& getName() const;
     const QString& getPath() const;
     JSONReaderErrors getStatus() const;
@@ -63,36 +56,8 @@ public:
 };
 namespace TOOLS
 {
-    bool check(const QJsonArray& json, std::vector<QString> array);
-    class SaveJSON: private NonInitializable
-    {
-    private:
-        static QJsonObject* m_obj;
-        static QString m_path;
-        static bool info;
-        static void save();
-        static void add_JSONReader(const JSONReader& obj);
-    public:
-        template <typename First, typename ... Rest>
-        static void save(First&& first, Rest&& ... rest);
-        template<typename ...Args>
-        static void save(Args&& ... args);
-    };
-
-    template <typename First, typename ... Rest>
-    void SaveJSON::save(First&& first, Rest&& ... rest)
-    {
-        add_JSONReader(std::forward<First>(first));
-        save(std::forward<Rest>(rest) ...);
-    }
-
-    template<typename ...Args>
-    void SaveJSON::save(Args&& ... args)
-    {
-        save(std::forward<Args>(args) ...);
-    }
     template<typename Type, typename What, typename Where>
-    static int setup(What& what, Where& where)
+    inline int setup(What& what, Where& where)
     {
         int problems = 0;
         for(const auto& element : what)
@@ -109,6 +74,17 @@ namespace TOOLS
             }
         }
         return problems;
+    }
+    template<typename What>
+    inline QJsonArray toArray(const std::list<std::shared_ptr<What>>& in)
+    {
+        QJsonArray array;
+        for(const auto& ele : in)
+        {
+            const What& x = *ele.get();
+            array.push_back(x.toJSONObject());
+        }
+        return array;
     }
 }
 #endif // JSONREADER_H

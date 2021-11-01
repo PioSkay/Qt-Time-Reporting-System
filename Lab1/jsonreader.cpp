@@ -20,6 +20,10 @@ void JSONReader::open()
     }
 }
 
+JSONReader::JSONReader(const QString& path, bool initNow):
+    JSONReader(path, "", {}, initNow)
+{}
+
 JSONReader::JSONReader(const QString& path, const QString& class_name, std::initializer_list<QString> check, bool initNow):
     m_name(class_name),
     m_path(path),
@@ -41,6 +45,24 @@ const QJsonArray& JSONReader::getArray() const
 {
     Log(3) << "getArray()";
     return m_array;
+}
+
+void JSONReader::update()
+{
+    m_object[m_name] = m_array;
+}
+void JSONReader::setArray(const QJsonArray& newArray)
+{
+    m_array = newArray;
+}
+void JSONReader::setObject(const QJsonObject& in)
+{
+    m_object = in;
+}
+
+const QJsonObject& JSONReader::getObject() const
+{
+    return m_object;
 }
 
 const QString& JSONReader::getPath() const
@@ -119,48 +141,3 @@ void JSONReader::save()
     file.close();
 }
 
-namespace TOOLS
-{
-    QJsonObject* SaveJSON::m_obj = nullptr;
-    QString SaveJSON::m_path = "";
-    bool SaveJSON::info = false;
-    void SaveJSON::save()
-    {
-        Log(1) << "Saving file to: " << m_path.toStdString();
-        QFile file(m_path);
-        LOG_THROW_ERROR_IF("Could not open a file!", !file.open(QIODevice::ReadWrite | QIODevice::Text), JSONReaderErrors, JSONReaderErrors::CouldNotOpen);
-        file.write(QJsonDocument(*m_obj).toJson());
-        file.close();
-        m_path = "";
-        info = false;
-        if(m_obj != nullptr)
-        {
-            delete m_obj;
-            m_obj = nullptr;
-        }
-    }
-    void SaveJSON::add_JSONReader(const JSONReader& obj)
-    {
-        LOG_THROW_ERROR_IF("JSONReader: " + obj.getName().toStdString() + ", is not initalized!", obj.getStatus() != JSONReaderErrors::None,
-                           JSONSaveErrors,
-                           JSONSaveErrors::ObjectNotInitialized);
-        if(m_obj == nullptr)
-        {
-            m_obj = new QJsonObject();
-        }
-        if(info == false && m_path.size() != 0)
-        {
-            if(m_path != obj.getName())
-            {
-                Log(Info) << "JSONReader has a different path. The file will be saved in the path of the top file.";
-                info = true;
-            }
-        }
-        else if(m_path.size() == 0)
-        {
-            m_path = obj.getPath();
-        }
-        (*m_obj)[obj.getName()] = obj.getArray();
-    }
-
-}

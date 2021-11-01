@@ -25,10 +25,7 @@ public:
     ~Login();
     bool isLoggedIn() const;
     const User& loggedUser() const;
-    const Users& getUsers() const
-    {
-        return m_users;
-    }
+    const Users& getUsers() const;
 private:
     Ui::Login *ui;
     void loginButton();

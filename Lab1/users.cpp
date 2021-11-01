@@ -45,3 +45,17 @@ User Users::registerUser(const QString& username, const QString& password, const
     save();
     return User(username);
 }
+
+const std::list<QString>& Users::getUsers() const
+{
+    return users;
+}
+
+void Users::debug() const
+{
+    Log(Debug) << "Current users:";
+    for(auto& x : users)
+    {
+        Log(Debug) << x.toStdString();
+    }
+}

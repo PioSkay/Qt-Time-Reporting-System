@@ -5,6 +5,7 @@
 
 #include "login.h"
 #include "base.h"
+#include "add_activity.h"
 
 namespace Ui {
 class MainWindow;
@@ -14,11 +15,10 @@ class MainWindow : public QMainWindow, public Base
 {
     Q_OBJECT
     Login login_window;
-    User current_user;
 public:
     explicit MainWindow(QWidget *parent = 0);
+    void add_project_Button();
     ~MainWindow();
-
 private:
     Ui::MainWindow *ui;
     void init();

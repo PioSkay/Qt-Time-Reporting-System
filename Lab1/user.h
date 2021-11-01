@@ -7,7 +7,6 @@
 
 #include"activities.h"
 #include"jsonreader.h"
-#include"base.h"
 
 class User
 {
@@ -21,52 +20,12 @@ public:
     User(const User& x);
     User(User&& x);
 
-    void setup_activities(Base* base)
-    {
-        Log(3) << "setup_activities()";
-        if(base != nullptr)
-        {
-            auto& array = base->getActivitiesList();
-            for(const auto& x : array)
-            {
-                if(*x.get() == m_username)
-                {
-                    manager_of.push_back(x);
-                }
-            }
-        }
-        else
-        {
-            Log(Error) << "Base in as nullptr! In: " << __FUNCTION__;
-        }
-    }
-    bool isManager(const QString& code)
-    {
-        for(const auto& x : manager_of)
-        {
-            if(!x.expired())
-            {
-                const auto& ele = x.lock();
-                if(*ele == code)
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+    void setup_activities(const std::list<std::shared_ptr<activities>>& base);
+    bool isManager(const QString& code);
     User& operator=(const User& x);
     const QString& username() const;
     bool isInit() const;
-    void debug()
-    {
-        Log(Debug) << "Data for user: " << m_username.toStdString() << ", is init: " << (init == true ? "True" : "False") << ", is a manager of:";
-        for(auto& ele : manager_of)
-        {
-            if(!ele.expired())
-                Log(Debug) << *ele.lock();
-        }
-    }
+    void debug();
 };
 
 #endif // USER_H

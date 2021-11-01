@@ -16,6 +16,14 @@ struct entries: public json_base
     QString subcode;
     int time;
     QString description;
+    entries(QDate d, QString c, QString sub, int t, QString desc):
+        date(d),
+        code(c),
+        subcode(sub),
+        time(t),
+        description(desc)
+    {}
+
     entries(const QJsonObject& obj)
     {
         Log(3) << "entries";
@@ -42,7 +50,7 @@ struct entries: public json_base
     QJsonObject toJSONObject() const override
     {
         QJsonObject x;
-        x["date"] = date.toString("YYYY-MM-DD");
+        x["date"] = date.toString("yyyy-MM-dd");
         x["code"] = code;
         x["subcode"] = subcode;
         x["time"] = time;
