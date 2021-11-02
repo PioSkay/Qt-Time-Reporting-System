@@ -14,11 +14,14 @@ class add_activity : public QDialog
     Q_OBJECT
     Base* m_base;
     void init();
+    static int ID;
 public:
     explicit add_activity(Base* base, QWidget *parent = nullptr);
     void create_button();
     void add_button();
     ~add_activity();
+public slots:
+    void removeItem(int ID);
 private:
     Ui::add_activity *ui;
 };

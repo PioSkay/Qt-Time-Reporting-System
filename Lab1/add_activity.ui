@@ -48,7 +48,7 @@
        </widget>
       </item>
       <item row="9" column="2">
-       <widget class="QLineEdit" name="project_time_budge_2">
+       <widget class="QLineEdit" name="sub_master">
         <property name="font">
          <font>
           <pointsize>12</pointsize>
@@ -72,7 +72,7 @@
        </widget>
       </item>
       <item row="9" column="3">
-       <widget class="QLineEdit" name="project_time_budge_3">
+       <widget class="QLineEdit" name="sub_second">
         <property name="font">
          <font>
           <pointsize>12</pointsize>
@@ -303,7 +303,7 @@
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
-     <widget class="QWidget" name="scrollAreaWidgetContents">
+     <widget class="QWidget" name="scroll">
       <property name="geometry">
        <rect>
         <x>0</x>

@@ -1,6 +1,8 @@
 #include "add_activity.h"
 #include "ui_add_activity.h"
-#include<QGroupBox>
+#include "subactivities_container.h"
+
+int add_activity::ID = 0;
 
 add_activity::add_activity(Base* base, QWidget *parent) :
     QDialog(parent),
@@ -27,12 +29,23 @@ void add_activity::create_button()
 void add_activity::add_button()
 {
     Log(Info) << __FUNCTION__ << " " << __LINE__;
-    QGroupBox *sale = new QGroupBox();
-    sale->setTitle("minha venda");
-    QPushButton* x = new QPushButton();
-    x->setText("ssss, ssss");
-    x->setStyleSheet("QPushButton:focus:pressed {background-color: red;}");
+    subactivities_container* x = new subactivities_container(ID++, ui->sub_master->text(), ui->sub_second->text(), this);
     ui->subactivities->widget()->layout()->addWidget(x);
+}
+
+void add_activity::removeItem(int ID)
+{
+    Log(Info) << __FUNCTION__ << " " << __LINE__;
+    for (int i = 0; i < ui->subactivities->widget()->layout()->count(); ++i) {
+        auto item = ui->subactivities->widget()->layout()->itemAt(i);
+        auto itemWidget = dynamic_cast<subactivities_container*>(item->widget());
+        if (itemWidget && itemWidget->getID() == ID){
+            ui->subactivities->widget()->layout()->removeItem(item);
+            itemWidget->close();
+            delete item;
+            break;
+        }
+    }
 }
 
 add_activity::~add_activity()
