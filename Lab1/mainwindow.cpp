@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "file_pipeline.h"
+#include "your_project.h"
+#include "subactivities_container.h"
 
 #include <QTimer>
 
@@ -30,18 +32,28 @@ void MainWindow::init()
 {
     connect(ui->new_project, &QPushButton::released, this, &MainWindow::add_project_Button);
     //Setting style
-    ui->your_projects->setFrameStyle(QFrame::Box);
-    ui->your_projects->setLineWidth(2);
+    ui->projects->setFrameStyle(QFrame::Box);
+    ui->projects->setLineWidth(2);
     ui->activities->setFrameStyle(QFrame::Box);
     ui->activities->setLineWidth(2);
     //ui->your_projects->setFrameShape(QFrame::StyledPanel);
 
-    Log(Info) << "init()";
     ui->user->setText("Welcome " + current_user.username());
     file x("11-2021-11.json");
     file y("11-2021-10.json", true);
     x.addEntries(entries(QDate::fromString("2021-11-09", "yyyy-MM-dd"), "ARGUS-123", "kappa", 180, "nothing").toJSONObject());
-    //current_user.setup_activities(this);
+
+    auto& array = getActivities().getArray();
+    QVBoxLayout* layout = new QVBoxLayout();
+    ui->projects->widget()->setLayout(layout);
+    for(auto& x: array)
+    {
+        if(x.get()->manager == getUser().username())
+        {
+            your_project* project = new your_project(x, x.get()->code, this);
+            ui->projects->widget()->layout()->addWidget(project);
+        }
+    }
 }
 
 void MainWindow::add_project_Button()

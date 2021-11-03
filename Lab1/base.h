@@ -34,7 +34,7 @@ public:
         activities.init();
         debug();
     }
-    const activities_pipeline& getActivities() const
+    activities_pipeline& getActivities()
     {
         return activities;
     }

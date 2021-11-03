@@ -1,8 +1,8 @@
 #include "add_activity.h"
 #include "ui_add_activity.h"
 #include "subactivities_container.h"
-
-int add_activity::ID = 0;
+#include "exceptions.h"
+#include<QIntValidator>
 
 add_activity::add_activity(Base* base, QWidget *parent) :
     QDialog(parent),
@@ -17,35 +17,71 @@ add_activity::add_activity(Base* base, QWidget *parent) :
 
 void add_activity::init()
 {
+    Log(Info) << __FUNCTION__ << " " << __LINE__;
     QVBoxLayout* layout = new QVBoxLayout();
     ui->subactivities->widget()->setLayout(layout);
+    ui->project_time_budge->setValidator(new QIntValidator(-1, 1000000, this));
 }
 
 void add_activity::create_button()
 {
-
+    Log(Info) << __FUNCTION__ << " " << __LINE__;
+    try {
+        std::list<std::pair<QString, QString>> sub;
+        for (int i = 0; i < ui->subactivities->widget()->layout()->count(); ++i) {
+            auto item = ui->subactivities->widget()->layout()->itemAt(i);
+            auto itemWidget = dynamic_cast<subactivities_container*>(item->widget());
+            sub.push_back(std::make_pair(itemWidget->getMaster(), itemWidget->getSecond()));
+        }
+        m_base->getActivities().addActivities(activities(
+                    ui->project_code->text(),
+                    m_base->getUser().username(),
+                    ui->project_name->text(),
+                    ui->project_time_budge->text().toInt(),
+                    true,
+                    sub));
+        close();
+    }  catch (DEFAULT_CATCH x) {
+        errorMsg(x.what());
+    }
 }
 
 void add_activity::add_button()
 {
     Log(Info) << __FUNCTION__ << " " << __LINE__;
-    subactivities_container* x = new subactivities_container(ID++, ui->sub_master->text(), ui->sub_second->text(), this);
-    ui->subactivities->widget()->layout()->addWidget(x);
-}
-
-void add_activity::removeItem(int ID)
-{
-    Log(Info) << __FUNCTION__ << " " << __LINE__;
+    if(ui->sub_master->text().size() == 0 || ui->sub_second->text().size() == 0)
+    {
+        errorMsg("Subactivity is empty!");
+        return;
+    }
+    subactivities_container* x = new subactivities_container(ui->sub_master->text(), ui->sub_second->text(), this);
     for (int i = 0; i < ui->subactivities->widget()->layout()->count(); ++i) {
         auto item = ui->subactivities->widget()->layout()->itemAt(i);
         auto itemWidget = dynamic_cast<subactivities_container*>(item->widget());
-        if (itemWidget && itemWidget->getID() == ID){
-            ui->subactivities->widget()->layout()->removeItem(item);
-            itemWidget->close();
-            delete item;
-            break;
+        if(*itemWidget == *x)
+        {
+            errorMsg("Subactivity already exists!");
+            delete x;
+            return;
         }
     }
+    ui->subactivities->widget()->layout()->addWidget(x);
+}
+
+void add_activity::removeItem(QWidget* in)
+{
+    Log(Info) << __FUNCTION__ << " " << __LINE__;
+    if(in)
+    {
+        ui->subactivities->widget()->layout()->removeWidget(in);
+        delete in;
+    }
+}
+
+void add_activity::errorMsg(const QString& in)
+{
+    Log(Error) << in.toStdString();
+    ui->activity_error->setText(in);
 }
 
 add_activity::~add_activity()
