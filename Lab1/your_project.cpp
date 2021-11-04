@@ -2,15 +2,15 @@
 #include "ui_your_project.h"
 #include "exceptions.h"
 
-your_project::your_project(std::shared_ptr<activities> activity, const QString& name, QWidget *parent) :
+your_project::your_project(std::shared_ptr<activities> activity, QWidget *parent) :
     QWidget(parent),
     m_activity(activity),
-    m_name(name),
     ui(new Ui::your_project)
 {
     Log(Info) << __FUNCTION__ << ", " << __LINE__;
     ui->setupUi(this);
-    ui->name->setText(name);
+    activity ? m_name = activity->name : m_name = "";
+    ui->name->setText(m_name);
 }
 
 your_project::~your_project()

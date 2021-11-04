@@ -26,18 +26,8 @@ const JSONReader& activities_pipeline::getJSONReader() const
     Log(3) << __FUNCTION__ << ", " << __LINE__;
     return m_activities;
 }
-void activities_pipeline::addActivities(const QJsonObject& in)
-{
-    Log(3) << __FUNCTION__ << ", " << __LINE__;
-    activities obj(in);
-    for(const auto& x : formated_activities)
-    {
-        THROW_DEFAULT(*x.get() == obj, "Project with that code already exists");
-    }
-    m_modified = true;
-    formated_activities.push_back(std::make_shared<activities>(std::move(obj)));
-}
-void activities_pipeline::addActivities(const activities& obj)
+
+std::shared_ptr<activities> activities_pipeline::addActivities(const activities& obj)
 {
     Log(3) << __FUNCTION__ << ", " << __LINE__;
     for(const auto& x : formated_activities)
@@ -46,6 +36,7 @@ void activities_pipeline::addActivities(const activities& obj)
     }
     m_modified = true;
     formated_activities.emplace_back(std::make_shared<activities>(obj));
+    return formated_activities.back();
 }
 activities_pipeline::~activities_pipeline()
 {

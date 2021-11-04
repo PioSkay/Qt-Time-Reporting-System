@@ -11,7 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    /*
+
     login_window.exec();
     if(!login_window.isLoggedIn())
     {
@@ -19,7 +19,6 @@ MainWindow::MainWindow(QWidget *parent) :
         QTimer::singleShot(0, this, SLOT(close()));
     }
     else
-    */
     {
         current_user = User("11");// login_window.loggedUser();
         initJSON(login_window.getUsers().getUsers());
@@ -50,16 +49,23 @@ void MainWindow::init()
     {
         if(x.get()->manager == getUser().username())
         {
-            your_project* project = new your_project(x, x.get()->code, this);
+            your_project* project = new your_project(x, this);
             ui->projects->widget()->layout()->addWidget(project);
         }
     }
 }
 
+void MainWindow::addActivityToMainScreen(std::shared_ptr<activities> in)
+{
+    Log(Info) << __FUNCTION__ << " " << __LINE__;
+    your_project* element = new your_project(in, this);
+    ui->projects->widget()->layout()->addWidget(element);
+}
+
 void MainWindow::add_project_Button()
 {
     Log(Info) << __FUNCTION__ << " " << __LINE__;
-    add_activity activity(this);
+    add_activity activity(this, this);
     activity.exec();
 }
 

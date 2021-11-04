@@ -30,6 +30,7 @@ JSONReader::JSONReader(const QString& path, const QString& class_name, std::init
     m_status(JSONReaderErrors::NotInit),
     m_check(check)
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     if(initNow)
     {
         init();
@@ -37,55 +38,59 @@ JSONReader::JSONReader(const QString& path, const QString& class_name, std::init
 }
 QJsonArray& JSONReader::getArray()
 {
-    Log(3) << "getArray()";
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     return m_array;
 }
 
 const QJsonArray& JSONReader::getArray() const
 {
-    Log(3) << "getArray()";
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     return m_array;
 }
 
 void JSONReader::update()
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     m_object[m_name] = m_array;
 }
 void JSONReader::setArray(const QJsonArray& newArray)
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     m_array = newArray;
 }
 void JSONReader::setObject(const QJsonObject& in)
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     m_object = in;
 }
 
 const QJsonObject& JSONReader::getObject() const
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     return m_object;
 }
 
 const QString& JSONReader::getPath() const
 {
-    Log(3) << "getPath()";
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     return m_path;
 }
 
 const QString& JSONReader::getName() const
 {
-    Log(3) << "getName()";
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     return m_name;
 }
 
 JSONReaderErrors JSONReader::getStatus() const
 {
-    Log(3) << "getStatus()";
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     return m_status;
 }
 
 void JSONReader::clear()
 {
-    Log(3) << "clear()";
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     while(m_array.size() >= 1)
     {
         m_array.pop_front();
@@ -94,7 +99,7 @@ void JSONReader::clear()
 
 JSONReaderErrors JSONReader::init()
 {
-    Log(1) << "init(): " << m_path.toStdString();
+    Log(3) << __FUNCTION__ << ", " << __LINE__ << ", " << m_path.toStdString();
     if(m_status != JSONReaderErrors::None)
     {
         m_status = JSONReaderErrors::NotInit;

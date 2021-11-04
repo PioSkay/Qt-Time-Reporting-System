@@ -18,6 +18,7 @@ class MainWindow : public QMainWindow, public Base
 public:
     explicit MainWindow(QWidget *parent = 0);
     void add_project_Button();
+    void addActivityToMainScreen(std::shared_ptr<activities> in) override;
     ~MainWindow();
 private:
     Ui::MainWindow *ui;

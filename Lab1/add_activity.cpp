@@ -2,6 +2,7 @@
 #include "ui_add_activity.h"
 #include "subactivities_container.h"
 #include "exceptions.h"
+#include "mainwindow.h"
 #include<QIntValidator>
 
 add_activity::add_activity(Base* base, QWidget *parent) :
@@ -33,13 +34,14 @@ void add_activity::create_button()
             auto itemWidget = dynamic_cast<subactivities_container*>(item->widget());
             sub.push_back(std::make_pair(itemWidget->getMaster(), itemWidget->getSecond()));
         }
-        m_base->getActivities().addActivities(activities(
-                    ui->project_code->text(),
-                    m_base->getUser().username(),
-                    ui->project_name->text(),
-                    ui->project_time_budge->text().toInt(),
-                    true,
-                    sub));
+        m_base->addActivityToMainScreen(
+                    m_base->getActivities().addActivities(activities(
+                                        ui->project_code->text(),
+                                        m_base->getUser().username(),
+                                        ui->project_name->text(),
+                                        ui->project_time_budge->text().toInt(),
+                                        true,
+                                        sub)));
         close();
     }  catch (DEFAULT_CATCH x) {
         errorMsg(x.what());

@@ -15,7 +15,7 @@ class your_project : public QWidget
     std::shared_ptr<activities> m_activity;
     QString m_name;
 public:
-    explicit your_project(std::shared_ptr<activities> activity, const QString& name, QWidget *parent = nullptr);
+    explicit your_project(std::shared_ptr<activities> activity, QWidget *parent = nullptr);
     ~your_project();
 
 private:

@@ -14,8 +14,7 @@ public:
     void init();
     const std::list<std::shared_ptr<activities>>& getArray() const;
     const JSONReader& getJSONReader() const;
-    void addActivities(const QJsonObject& in);
-    void addActivities(const activities& obj);
+    std::shared_ptr<activities> addActivities(const activities& obj);
     ~activities_pipeline();
 };
 

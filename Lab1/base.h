@@ -7,14 +7,14 @@
 
 class Base
 {
-    activities_pipeline activities;
+    activities_pipeline m_activities;
     std::list<QString> m_usernames;
 protected:
     User current_user;
     void debug() const
     {
         Log(Debug) << "[formated_activities]:";
-        const auto& array = activities.getArray();
+        const auto& array = m_activities.getArray();
         for(auto& x : array)
         {
             Log(Debug) << *x.get();
@@ -31,17 +31,18 @@ public:
     {
         Log(3) << __FUNCTION__ << " " << __LINE__;
         m_usernames = username;
-        activities.init();
+        m_activities.init();
         debug();
     }
     activities_pipeline& getActivities()
     {
-        return activities;
+        return m_activities;
     }
     const User& getUser() const
     {
         return current_user;
     }
+    virtual void addActivityToMainScreen(std::shared_ptr<activities> in) = 0;
 };
 
 #endif // BASE_H

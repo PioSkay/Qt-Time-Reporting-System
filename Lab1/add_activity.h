@@ -14,11 +14,16 @@ class add_activity : public QDialog
     Q_OBJECT
     Base* m_base;
     void init();
+    std::shared_ptr<activities> m_created;
 public:
     explicit add_activity(Base* base, QWidget *parent = nullptr);
     void create_button();
     void add_button();
     void errorMsg(const QString& in);
+    std::shared_ptr<activities> getActivity()
+    {
+        return m_created;
+    }
     ~add_activity();
 public slots:
     void removeItem(QWidget* in);
