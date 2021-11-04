@@ -14,13 +14,69 @@ enum class fileError
     IncorrectFileName
 };
 
+struct file_name
+{
+    QString m_name;
+    int year;
+    int month;
+    bool isInit;
+    file_name():
+        isInit(false)
+    {}
+    file_name(const QString& m_path):
+        isInit(false)
+    {
+        QString date;
+        bool b = false;
+        for(int i = 0; i < m_path.size(); i++)
+        {
+            if(!b)
+            {
+                if(m_path[i] == '-')
+                {
+                    b = true;
+                    continue;
+                }
+                m_name += m_path[i];
+            }
+            else
+            {
+                date += m_path[i];
+            }
+        }
+        LOG_THROW_ERROR_IF("Incorrect file name", m_name.size() == 0, fileError, fileError::IncorrectFileName);
+        LOG_THROW_ERROR_IF("Incorrect file name", date.size() == 0, fileError, fileError::IncorrectFileName);
+        date.remove(".json");
+        QDate m_date = QDate::fromString(date, "yyyy-MM");
+        LOG_THROW_ERROR_IF("Could not create date", !m_date.isValid(), fileError, fileError::IncorrectFileName);
+        year = m_date.year();
+        month = m_date.month();
+        isInit = true;
+    }
+    file_name(const file_name& x):
+        m_name(x.m_name),
+        year(x.year),
+        month(x.month),
+        isInit(x.isInit)
+    {}
+    file_name(const QString& in, int y, int m)
+    {
+        m_name = in;
+        year = y;
+        month = m;
+    }
+    bool operator==(const file_name& in) const
+    {
+        return m_name == in.m_name && year == in.year && month == in.month;
+    }
+};
+
 class file: public json_base
 {
     bool isModified;
     JSONReader m_json;
     bool isFrozen;
-    QDate m_date;
-    QString m_name;
+    file_name m_data;
     std::list<std::shared_ptr<entries>> formated_entries;
     std::list<std::shared_ptr<accepted>> formated_accepted;
     void initExisting();
@@ -33,11 +89,15 @@ public:
     bool addAccepted(const QJsonObject& in);
     bool operator==(const file& in) const
     {
-        return in.m_date == m_date && in.m_name == m_name;
+        return m_data == in.m_data;
+    }
+    bool operator==(const file_name& in) const
+    {
+        return m_data == in;
     }
     const QString& owner() const
     {
-        return m_name;
+        return m_data.m_name;
     }
     bool status() const
     {

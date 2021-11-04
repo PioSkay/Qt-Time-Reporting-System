@@ -14,18 +14,9 @@ class subactivities_container : public QWidget
     QString m_second;
 public:
     explicit subactivities_container(const QString& master, const QString& second, QWidget *parent = nullptr);
-    const QString& getMaster() const
-    {
-        return m_master;
-    }
-    const QString& getSecond() const
-    {
-        return m_second;
-    }
-    bool operator==(const subactivities_container& in)
-    {
-        return m_master == in.m_master && m_second == in.m_second;
-    }
+    const QString& getMaster() const;
+    const QString& getSecond() const;
+    bool operator==(const subactivities_container& in) const;
     void on_toolButton_clicked();
     ~subactivities_container();
 signals:

@@ -1,31 +1,7 @@
 #include "file_pipeline.h"
 void file::initExisting()
 {
-    QString name;
-    QString date;
-    bool b = false;
-    QString m_path = m_json.getPath();
-    for(int i = 0; i < m_path.size(); i++)
-    {
-        if(!b)
-        {
-            if(m_path[i] == '-')
-            {
-                b = true;
-                continue;
-            }
-            name += m_path[i];
-        }
-        else
-        {
-            date += m_path[i];
-        }
-    }
-    LOG_THROW_ERROR_IF("Incorrect file name", name.size() == 0, fileError, fileError::IncorrectFileName);
-    LOG_THROW_ERROR_IF("Incorrect file name", date.size() == 0, fileError, fileError::IncorrectFileName);
-    date.remove(".json");
-    QDate x = QDate::fromString(date, "yyyy-MM");
-    LOG_THROW_ERROR_IF("Could not create date", !x.isValid(), fileError, fileError::IncorrectFileName);
+    m_data = file_name(m_json.getPath());
     const auto& obj = m_json.getObject();
     const auto& frozen = obj.value("frozen");
     const auto& ent = obj.value("entries");

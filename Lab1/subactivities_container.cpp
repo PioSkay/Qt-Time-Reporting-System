@@ -15,6 +15,21 @@ subactivities_container::subactivities_container(const QString& master, const QS
     connect(this, SIGNAL(sendRemoveItem(QWidget*)), parent, SLOT(removeItem(QWidget*)));
 }
 
+const QString& subactivities_container::getMaster() const
+{
+    return m_master;
+}
+
+const QString& subactivities_container::getSecond() const
+{
+    return m_second;
+}
+
+bool subactivities_container::operator==(const subactivities_container& in) const
+{
+    return m_master == in.m_master && m_second == in.m_second;
+}
+
 void subactivities_container::on_toolButton_clicked()
 {
     emit sendRemoveItem(this);
