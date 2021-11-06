@@ -7,7 +7,7 @@ your_project::your_project(std::shared_ptr<activities> activity, QWidget *parent
     m_activity(activity),
     ui(new Ui::your_project)
 {
-    Log(Info) << __FUNCTION__ << ", " << __LINE__;
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     ui->setupUi(this);
     activity ? m_name = activity->name : m_name = "";
     ui->name->setText(m_name);

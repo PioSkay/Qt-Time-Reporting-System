@@ -51,12 +51,12 @@ void add_activity::create_button()
 void add_activity::add_button()
 {
     Log(Info) << __FUNCTION__ << " " << __LINE__;
-    if(ui->sub_master->text().size() == 0 || ui->sub_second->text().size() == 0)
+    if(ui->sub_second->text().size() == 0)
     {
         errorMsg("Subactivity is empty!");
         return;
     }
-    subactivities_container* x = new subactivities_container(ui->sub_master->text(), ui->sub_second->text(), this);
+    subactivities_container* x = new subactivities_container("code", ui->sub_second->text(), this);
     for (int i = 0; i < ui->subactivities->widget()->layout()->count(); ++i) {
         auto item = ui->subactivities->widget()->layout()->itemAt(i);
         auto itemWidget = dynamic_cast<subactivities_container*>(item->widget());
@@ -84,6 +84,11 @@ void add_activity::errorMsg(const QString& in)
 {
     Log(Error) << in.toStdString();
     ui->activity_error->setText(in);
+}
+
+std::shared_ptr<activities> add_activity::getActivity()
+{
+    return m_created;
 }
 
 add_activity::~add_activity()

@@ -20,10 +20,7 @@ public:
     void create_button();
     void add_button();
     void errorMsg(const QString& in);
-    std::shared_ptr<activities> getActivity()
-    {
-        return m_created;
-    }
+    std::shared_ptr<activities> getActivity();
     ~add_activity();
 public slots:
     void removeItem(QWidget* in);

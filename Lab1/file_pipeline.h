@@ -20,55 +20,12 @@ struct file_name
     int year;
     int month;
     bool isInit;
-    file_name():
-        isInit(false)
-    {}
-    file_name(const QString& m_path):
-        isInit(false)
-    {
-        QString date;
-        bool b = false;
-        for(int i = 0; i < m_path.size(); i++)
-        {
-            if(!b)
-            {
-                if(m_path[i] == '-')
-                {
-                    b = true;
-                    continue;
-                }
-                m_name += m_path[i];
-            }
-            else
-            {
-                date += m_path[i];
-            }
-        }
-        LOG_THROW_ERROR_IF("Incorrect file name", m_name.size() == 0, fileError, fileError::IncorrectFileName);
-        LOG_THROW_ERROR_IF("Incorrect file name", date.size() == 0, fileError, fileError::IncorrectFileName);
-        date.remove(".json");
-        QDate m_date = QDate::fromString(date, "yyyy-MM");
-        LOG_THROW_ERROR_IF("Could not create date", !m_date.isValid(), fileError, fileError::IncorrectFileName);
-        year = m_date.year();
-        month = m_date.month();
-        isInit = true;
-    }
-    file_name(const file_name& x):
-        m_name(x.m_name),
-        year(x.year),
-        month(x.month),
-        isInit(x.isInit)
-    {}
-    file_name(const QString& in, int y, int m)
-    {
-        m_name = in;
-        year = y;
-        month = m;
-    }
-    bool operator==(const file_name& in) const
-    {
-        return m_name == in.m_name && year == in.year && month == in.month;
-    }
+    file_name();
+    file_name(const QString& m_path);
+    file_name(const file_name& x);
+    file_name(const QString& in, int y, int m);
+    bool operator==(const file_name& in) const;
+    QString toString() const;
 };
 
 class file: public json_base
@@ -83,26 +40,18 @@ class file: public json_base
     template<typename What, typename Where>
     bool add(Where& where, const QJsonObject& in);
 public:
-    file(const QString& path, bool create = false);
+    file(const QString& path, const file_name& name, bool create = false);
     QJsonObject toJSONObject() const override;
     bool addEntries(const QJsonObject& in);
     bool addAccepted(const QJsonObject& in);
-    bool operator==(const file& in) const
-    {
-        return m_data == in.m_data;
-    }
-    bool operator==(const file_name& in) const
-    {
-        return m_data == in;
-    }
-    const QString& owner() const
-    {
-        return m_data.m_name;
-    }
-    bool status() const
-    {
-        return isFrozen;
-    }
+    bool addEntries(const entries& in);
+    bool addAccepted(const accepted& in);
+    bool isFileFrozen() const;
+    std::list<std::shared_ptr<entries>> getEntries();
+    std::list<std::shared_ptr<accepted>> getAccepted();
+    bool operator==(const file& in) const;
+    bool operator==(const file_name& in) const;
+    const QString& owner() const;
     ~file();
 };
 

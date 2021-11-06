@@ -144,5 +144,5 @@ void JSONReader::save()
         file.write(QJsonDocument(m_object).toJson());
     }
     file.close();
-}
 
+}
