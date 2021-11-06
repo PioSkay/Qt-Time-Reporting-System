@@ -9,14 +9,14 @@ void activities_pipeline::init()
     m_activities.init();
     if(m_activities.getStatus() == JSONReaderErrors::None)
     {
-        TOOLS::setup<activities>(m_activities.getArray(), formated_activities);
+        TOOLS::setup<TOOLS::activities>(m_activities.getArray(), formated_activities);
     }
     else
     {
         Log(Info) << "Could not read any activities!";
     }
 }
-const std::list<std::shared_ptr<activities>>& activities_pipeline::getArray() const
+const std::list<std::shared_ptr<TOOLS::activities>>& activities_pipeline::getArray() const
 {
     Log(3) << __FUNCTION__ << ", " << __LINE__;
     return formated_activities;
@@ -27,7 +27,7 @@ const JSONReader& activities_pipeline::getJSONReader() const
     return m_activities;
 }
 
-std::shared_ptr<activities> activities_pipeline::addActivities(const activities& obj)
+std::shared_ptr<TOOLS::activities> activities_pipeline::addActivities(const TOOLS::activities& obj)
 {
     Log(3) << __FUNCTION__ << ", " << __LINE__;
     for(const auto& x : formated_activities)
@@ -35,7 +35,7 @@ std::shared_ptr<activities> activities_pipeline::addActivities(const activities&
         THROW_DEFAULT(*x.get() == obj, "Project with that code already exists");
     }
     m_modified = true;
-    formated_activities.emplace_back(std::make_shared<activities>(obj));
+    formated_activities.emplace_back(std::make_shared<TOOLS::activities>(obj));
     return formated_activities.back();
 }
 activities_pipeline::~activities_pipeline()
@@ -44,7 +44,7 @@ activities_pipeline::~activities_pipeline()
     if(m_modified)
     {
         Log(Info) << "Saving activities!";
-        m_activities.setArray(TOOLS::toArray<activities>(formated_activities));
+        m_activities.setArray(TOOLS::toArray<TOOLS::activities>(formated_activities));
         m_activities.save();
     }
 }

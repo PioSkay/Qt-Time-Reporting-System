@@ -32,6 +32,7 @@ SOURCES += \
         activities_pipeline.cpp \
         add_activity.cpp \
         add_time.cpp \
+        adjust_window.cpp \
         base.cpp \
         entries.cpp \
         error_msg.cpp \
@@ -41,6 +42,8 @@ SOURCES += \
         login.cpp \
         main.cpp \
         mainwindow.cpp \
+        project_pending_request.cpp \
+        project_reports.cpp \
         subactivities_container.cpp \
         user.cpp \
         users.cpp \
@@ -54,6 +57,7 @@ HEADERS += \
         activities_pipeline.h \
         add_activity.h \
         add_time.h \
+        adjust_window.h \
         base.h \
         entries.h \
         error_msg.h \
@@ -64,6 +68,8 @@ HEADERS += \
         jsonreader.h \
         login.h \
         mainwindow.h \
+        project_pending_request.h \
+        project_reports.h \
         subactivities_container.h \
         user.h \
         users.h \
@@ -73,9 +79,12 @@ HEADERS += \
 FORMS += \
         add_activity.ui \
         add_time.ui \
+        adjust_window.ui \
         error_msg.ui \
         login.ui \
         mainwindow.ui \
+        project_pending_request.ui \
+        project_reports.ui \
         subactivities_container.ui \
         your_project.ui \
         your_tempo.ui

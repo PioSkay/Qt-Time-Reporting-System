@@ -16,6 +16,7 @@ public:
     std::shared_ptr<file> add(const file_name& dir);
     std::shared_ptr<file> add_or_find(const QString& user, int year, int month);
     std::shared_ptr<file> find(const QString& user, int year, int month);
+    std::list<std::shared_ptr<file>> getFileList();
 };
 
 #endif // FILES_PIPELINE_H

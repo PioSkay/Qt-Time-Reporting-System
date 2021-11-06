@@ -55,7 +55,7 @@ void add_time::on_log_released()
 {
     try{
         THROW_DEFAULT(ui->amount->text().size() == 0, "Please fill the time field!")
-        entries x(ui->date->date(),
+        TOOLS::entries x(ui->date->date(),
                   ui->project->currentText(),
                   ui->subactivity1->currentText(),
                   ui->amount->text().toInt(),

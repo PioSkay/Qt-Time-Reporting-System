@@ -21,7 +21,7 @@ public:
     std::shared_ptr<files_pipeline> getFiles();
     bool isFrozen(const QString& name, int year, int month);
     const User& getUser() const;
-    virtual void addActivityToMainScreen(std::shared_ptr<activities> in) = 0;
+    virtual void addActivityToMainScreen(std::shared_ptr<TOOLS::activities> in) = 0;
     virtual void update_temp(int year, int month, int day) = 0;
     virtual void update_temp() = 0;
     virtual QDate getTime() const = 0;

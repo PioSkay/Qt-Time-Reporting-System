@@ -35,7 +35,7 @@ void add_activity::create_button()
             sub.push_back(std::make_pair(itemWidget->getMaster(), itemWidget->getSecond()));
         }
         m_base->addActivityToMainScreen(
-                    m_base->getActivities().addActivities(activities(
+                    m_base->getActivities().addActivities(TOOLS::activities(
                                         ui->project_code->text(),
                                         m_base->getUser().username(),
                                         ui->project_name->text(),
@@ -86,7 +86,7 @@ void add_activity::errorMsg(const QString& in)
     ui->activity_error->setText(in);
 }
 
-std::shared_ptr<activities> add_activity::getActivity()
+std::shared_ptr<TOOLS::activities> add_activity::getActivity()
 {
     return m_created;
 }

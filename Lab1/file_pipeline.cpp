@@ -67,9 +67,9 @@ void file::initExisting()
     Log(1) << "Entry check ok: " << __FUNCTION__ << ", " << __LINE__;
     isFrozen = (frozen.toString() == "True" || frozen.toString() == "true" ? true : false);
     auto array = ent.toArray();
-    TOOLS::setup<entries>(array, formated_entries);
+    TOOLS::setup<TOOLS::entries>(array, formated_entries);
     auto array2 = acc.toArray();
-    TOOLS::setup<accepted>(array2, formated_accepted);
+    TOOLS::setup<TOOLS::accepted>(array2, formated_accepted);
 }
 
 file::file(const QString& path, const file_name& name, bool create):
@@ -92,15 +92,15 @@ QJsonObject file::toJSONObject() const
 {
     QJsonObject obj;
     obj["frozen"] = (isFrozen == true ? "True" : "False");
-    obj["entries"] = TOOLS::toArray<entries>(formated_entries);
-    obj["accepted"] = TOOLS::toArray<accepted>(formated_accepted);
+    obj["entries"] = TOOLS::toArray<TOOLS::entries>(formated_entries);
+    obj["accepted"] = TOOLS::toArray<TOOLS::accepted>(formated_accepted);
     return obj;
 }
 bool file::addEntries(const QJsonObject& in)
 {
     if(!isFrozen)
     {
-        return add<entries>(formated_entries, in);
+        return add<TOOLS::entries>(formated_entries, in);
     }
     else
     {
@@ -110,15 +110,15 @@ bool file::addEntries(const QJsonObject& in)
 }
 bool file::addAccepted(const QJsonObject& in)
 {
-    return add<accepted>(formated_accepted, in);
+    return add<TOOLS::accepted>(formated_accepted, in);
 }
 
-bool file::addEntries(const entries& in)
+bool file::addEntries(const TOOLS::entries& in)
 {
     if(!isFrozen)
     {
         isModified = true;
-        formated_entries.emplace_back(std::make_shared<entries>(std::move(in)));
+        formated_entries.emplace_back(std::make_shared<TOOLS::entries>(std::move(in)));
         return true;
     }
     else
@@ -128,12 +128,12 @@ bool file::addEntries(const entries& in)
     }
 }
 
-bool file::addAccepted(const accepted& in)
+bool file::addAccepted(const TOOLS::accepted& in)
 {
     if(!isFrozen)
     {
         isModified = true;
-        formated_accepted.emplace_back(std::make_shared<accepted>(std::move(in)));
+        formated_accepted.emplace_back(std::make_shared<TOOLS::accepted>(std::move(in)));
         return true;
     }
     else
@@ -142,15 +142,36 @@ bool file::addAccepted(const accepted& in)
         return false;
     }
 }
+
+bool file::removeEntrie(std::shared_ptr<TOOLS::entries> in)
+{
+    for(auto ele = formated_entries.begin();
+        ele !=  formated_entries.end(); ++ele)
+    {
+        if(in.get() == ele->get())
+        {
+            formated_entries.erase(ele);
+            return true;
+        }
+    }
+    return false;
+}
+
 bool file::isFileFrozen() const
 {
     return isFrozen;
 }
-std::list<std::shared_ptr<entries>> file::getEntries()
+
+void file::modifyFile()
+{
+    isModified = true;
+}
+
+std::list<std::shared_ptr<TOOLS::entries>> file::getEntries()
 {
     return formated_entries;
 }
-std::list<std::shared_ptr<accepted>> file::getAccepted()
+std::list<std::shared_ptr<TOOLS::accepted>> file::getAccepted()
 {
     return formated_accepted;
 }

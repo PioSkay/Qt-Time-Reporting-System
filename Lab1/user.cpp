@@ -26,7 +26,7 @@ User::User(User&& x):
     m_username(std::move(x.m_username))
 {}
 
-void User::setup_activities(const std::list<std::shared_ptr<activities>>& array)
+void User::setup_activities(const std::list<std::shared_ptr<TOOLS::activities>>& array)
 {
     Log(3) << "setup_activities()";
     for(const auto& x : array)

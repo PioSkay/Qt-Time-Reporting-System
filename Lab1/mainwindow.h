@@ -20,15 +20,18 @@ class MainWindow : public QMainWindow, public Base
 {
     Q_OBJECT
     Login login_window;
+    std::shared_ptr<file> m_file;
 public:
     explicit MainWindow(QWidget *parent = 0);
     void add_project_Button();
     void log_time_Button();
-    void addActivityToMainScreen(std::shared_ptr<activities> in) override;
+    void addActivityToMainScreen(std::shared_ptr<TOOLS::activities> in) override;
     void update_temp(int year, int month, int day) override;
     void update_temp() override;
     void clearLayout(QLayout* layout, bool deleteWidgets = true);
     QDate getTime() const override;
+    void submit_button_released();
+    void submitButton(int year, int month);
     ~MainWindow();
 private slots:
     void on_calendarWidget_clicked(const QDate &date);

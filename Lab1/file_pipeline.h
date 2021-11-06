@@ -34,8 +34,8 @@ class file: public json_base
     JSONReader m_json;
     bool isFrozen;
     file_name m_data;
-    std::list<std::shared_ptr<entries>> formated_entries;
-    std::list<std::shared_ptr<accepted>> formated_accepted;
+    std::list<std::shared_ptr<TOOLS::entries>> formated_entries;
+    std::list<std::shared_ptr<TOOLS::accepted>> formated_accepted;
     void initExisting();
     template<typename What, typename Where>
     bool add(Where& where, const QJsonObject& in);
@@ -44,11 +44,13 @@ public:
     QJsonObject toJSONObject() const override;
     bool addEntries(const QJsonObject& in);
     bool addAccepted(const QJsonObject& in);
-    bool addEntries(const entries& in);
-    bool addAccepted(const accepted& in);
+    bool addEntries(const TOOLS::entries& in);
+    bool addAccepted(const TOOLS::accepted& in);
+    bool removeEntrie(std::shared_ptr<TOOLS::entries> in);
     bool isFileFrozen() const;
-    std::list<std::shared_ptr<entries>> getEntries();
-    std::list<std::shared_ptr<accepted>> getAccepted();
+    void modifyFile();
+    std::list<std::shared_ptr<TOOLS::entries>> getEntries();
+    std::list<std::shared_ptr<TOOLS::accepted>> getAccepted();
     bool operator==(const file& in) const;
     bool operator==(const file_name& in) const;
     const QString& owner() const;

@@ -58,3 +58,8 @@ std::shared_ptr<file> files_pipeline::find(const QString& user, int year, int mo
     }
     return nullptr;
 }
+
+std::list<std::shared_ptr<file>> files_pipeline::getFileList()
+{
+    return m_files;
+}

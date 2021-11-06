@@ -73,7 +73,7 @@
     </widget>
    </item>
    <item row="1" column="3">
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="edit">
      <property name="font">
       <font>
        <pointsize>10</pointsize>

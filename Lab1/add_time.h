@@ -13,7 +13,7 @@ class add_time : public QDialog
 {
     Q_OBJECT
     Base* m_base;
-    std::shared_ptr<activities> current;
+    std::shared_ptr<TOOLS::activities> current;
 public:
     explicit add_time(Base* base, QWidget *parent = nullptr);
     void setSubactivity(const QString& project);

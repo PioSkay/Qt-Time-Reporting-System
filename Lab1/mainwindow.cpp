@@ -10,6 +10,7 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
+    m_file(nullptr),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -54,9 +55,10 @@ void MainWindow::init()
     }
     QDate date = ui->calendarWidget->selectedDate();
     update_temp(date.year(), date.month(), date.day());
+    //submitButton(date.month(), date.day());
 }
 
-void MainWindow::addActivityToMainScreen(std::shared_ptr<activities> in)
+void MainWindow::addActivityToMainScreen(std::shared_ptr<TOOLS::activities> in)
 {
     Log(Info) << __FUNCTION__ << " " << __LINE__;
     your_project* element = new your_project(in, this);
@@ -100,16 +102,16 @@ void MainWindow::update_temp(int year, int month, int day)
     auto* array = getFiles().get();
     if(array)
     {
-        file* fi = array->find(getUser().username(), year, month).get();
-        if(fi != nullptr)
+        std::shared_ptr<file> fi = array->find(getUser().username(), year, month);
+        if(fi.get() != nullptr)
         {
-            std::list<std::shared_ptr<entries>> entr = fi->getEntries();
+            std::list<std::shared_ptr<TOOLS::entries>> entr = fi->getEntries();
             for(auto& ele : entr)
             {
                 if(ele.get()->date.day() == day)
                 {
                     Log(Info) << day;
-                    your_tempo* widget = new your_tempo(ele.get()->date, ele, fi->isFileFrozen());
+                    your_tempo* widget = new your_tempo(ele.get()->date, ele, fi, fi->isFileFrozen());
                     ui->activities->widget()->layout()->addWidget(widget);
                 }
             }
@@ -139,9 +141,41 @@ void MainWindow::clearLayout(QLayout* layout, bool deleteWidgets)
     }
 }
 
+void MainWindow::submitButton(int year, int month)
+{
+    Log(Info) << __FUNCTION__ << ", " << __LINE__;
+
+    if(ui->frame->layout()->itemAt(2) == nullptr)
+    {
+        m_file = getFiles()->add_or_find(getUser().username(), year, month);
+        if(!m_file.get()->isFileFrozen())
+        {
+            QPushButton* button = new QPushButton;
+            button->setText("Submit");
+            ui->frame->layout()->addWidget(button);
+        }
+    }
+    else
+    {
+        m_file = getFiles()->add_or_find(getUser().username(), year, month);
+        if(m_file.get()->isFileFrozen())
+        {
+            auto* x = ui->frame->layout()->itemAt(2);
+            ui->frame->layout()->removeItem(x);
+            delete x;
+        }
+    }
+}
+
+void MainWindow::submit_button_released()
+{
+
+}
+
 void MainWindow::on_calendarWidget_currentPageChanged(int year, int month)
 {
     Log(Info) << year << " " << month;
+    //submitButton(year, month);
 }
 
 

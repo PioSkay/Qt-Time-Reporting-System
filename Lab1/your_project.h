@@ -4,6 +4,7 @@
 #include <QWidget>
 
 #include "activities.h"
+#include "base.h"
 
 namespace Ui {
 class your_project;
@@ -12,11 +13,15 @@ class your_project;
 class your_project : public QWidget
 {
     Q_OBJECT
-    std::shared_ptr<activities> m_activity;
+    std::shared_ptr<TOOLS::activities> m_activity;
     QString m_name;
+    Base* m_base;
 public:
-    explicit your_project(std::shared_ptr<activities> activity, QWidget *parent = nullptr);
+    explicit your_project(std::shared_ptr<TOOLS::activities> activity, Base* base, QWidget *parent = nullptr);
     ~your_project();
+
+private slots:
+    void on_pushButton_2_released();
 
 private:
     Ui::your_project *ui;
