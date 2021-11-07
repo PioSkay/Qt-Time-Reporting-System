@@ -40,6 +40,8 @@ private slots:
     void on_calendarWidget_clicked(const QDate &date);
     void on_calendarWidget_currentPageChanged(int year, int month);
 
+    void on_request_report_released();
+
 private:
     Ui::MainWindow *ui;
     void init();

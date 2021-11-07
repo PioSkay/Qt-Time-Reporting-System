@@ -195,7 +195,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_4">
+        <widget class="QPushButton" name="request_report">
          <property name="text">
           <string>Request Report</string>
          </property>

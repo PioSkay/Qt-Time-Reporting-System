@@ -5,7 +5,9 @@
 #include "subactivities_container.h"
 #include "add_time.h"
 #include "your_tempo.h"
+#include "request_report.h"
 
+#include <QMessageBox>
 #include <QTimer>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -219,4 +221,18 @@ void MainWindow::on_calendarWidget_currentPageChanged(int year, int month)
     submitButton(year, month);
 }
 
+void MainWindow::on_request_report_released()
+{
+    std::shared_ptr<file> m_file = getFiles()->find(getUser().username(), current_year, current_month);
+    if(m_file.get() == nullptr)
+    {
+        QMessageBox::warning(this, "Tempo", "Could not find any data!");
+    }
+    else
+    {
+        Log(3) << "Data";
+        request_report report(m_file);
+        report.exec();
+    }
+}
 

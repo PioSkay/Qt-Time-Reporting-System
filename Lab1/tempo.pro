@@ -35,7 +35,6 @@ SOURCES += \
         adjust_window.cpp \
         base.cpp \
         entries.cpp \
-        error_msg.cpp \
         file_pipeline.cpp \
         files_pipeline.cpp \
         jsonreader.cpp \
@@ -63,7 +62,6 @@ HEADERS += \
         adjust_window.h \
         base.h \
         entries.h \
-        error_msg.h \
         exceptions.h \
         file_pipeline.h \
         files_pipeline.h \
@@ -86,7 +84,6 @@ FORMS += \
         add_activity.ui \
         add_time.ui \
         adjust_window.ui \
-        error_msg.ui \
         login.ui \
         mainwindow.ui \
         project_pending_request.ui \
