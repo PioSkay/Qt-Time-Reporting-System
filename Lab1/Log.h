@@ -132,8 +132,10 @@ namespace MEP
     template<typename T>
     __Log& __Log::operator<<(const T& out)
     {
+#ifndef DISABLE_LOG
         _buffer << out;
         return *this;
+#endif
     }
 }
 #endif

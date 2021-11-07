@@ -3,9 +3,11 @@
 
 #include <list>
 
-add_time::add_time(Base* base, QWidget *parent) :
+add_time::add_time(Base* base, QWidget *parent, std::shared_ptr<TOOLS::entries> entr, std::shared_ptr<file> file) :
     QDialog(parent),
     m_base(base),
+    m_entr(entr),
+    m_file(file),
     ui(new Ui::add_time)
 {
     ui->setupUi(this);
@@ -19,9 +21,31 @@ add_time::add_time(Base* base, QWidget *parent) :
         if(ele.get()->active)
             ui->project->addItem(ele.get()->code);
     }
+    if(entr.get() != nullptr)
+    {
+        bool isSet = false;
+        for(int i = 0; i < ui->project->count(); i++)
+        {
+            if(ui->project->itemText(i) == entr->code)
+            {
+                ui->project->setCurrentIndex(i);
+                isSet = true;
+                break;
+            }
+        }
+        if(!isSet)
+        {
+            ui->project->addItem(entr->code);
+            ui->project->setCurrentIndex(ui->project->count()-1);
+        }
+        ui->date->setDate(entr->date);
+        setSubactivity(entr->code, entr->subcode);
+        ui->amount->setText(QString::number(entr->time));
+        ui->description->setText(entr->description);
+    }
 }
 
-void add_time::setSubactivity(const QString& project)
+void add_time::setSubactivity(const QString& project, const QString& subactivity)
 {
     const auto& act = m_base->getActivities().getArray();
     foreach(const auto& ele, act)
@@ -35,6 +59,10 @@ void add_time::setSubactivity(const QString& project)
             for(const auto& x : array)
             {
                 ui->subactivity1->addItem(x.second);
+                if(subactivity.size() != 0 && subactivity == x.second)
+                {
+                    ui->subactivity1->setCurrentText(x.second);
+                }
             }
             break;
         }
@@ -54,7 +82,11 @@ void add_time::on_project_currentIndexChanged(const QString &arg1)
 void add_time::on_log_released()
 {
     try{
-        THROW_DEFAULT(ui->amount->text().size() == 0, "Please fill the time field!")
+        THROW_DEFAULT(ui->amount->text().size() == 0, "Please fill the time field!");
+        if(m_entr.get() != nullptr)
+        {
+            m_file->removeEntrie(m_entr);
+        }
         TOOLS::entries x(ui->date->date(),
                   ui->project->currentText(),
                   ui->subactivity1->currentText(),

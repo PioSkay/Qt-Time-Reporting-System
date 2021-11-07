@@ -32,7 +32,7 @@ std::shared_ptr<files_pipeline> Base::getFiles()
 bool Base::isFrozen(const QString& name, int year, int month)
 {
     const auto& x = m_files.get()->find(name, year, month);
-    return x.get() != nullptr && x.get()->isFileFrozen();
+    return x.get() != nullptr && x.get()->isSubmited();
 }
 const User& Base::getUser() const
 {

@@ -24,6 +24,7 @@ public:
     virtual void addActivityToMainScreen(std::shared_ptr<TOOLS::activities> in) = 0;
     virtual void update_temp(int year, int month, int day) = 0;
     virtual void update_temp() = 0;
+    virtual void updateTotalTime() = 0;
     virtual QDate getTime() const = 0;
 };
 

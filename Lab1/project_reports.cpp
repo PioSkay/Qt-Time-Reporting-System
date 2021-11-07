@@ -31,10 +31,11 @@ project_reports::project_reports(std::shared_ptr<TOOLS::activities> activity, Ba
             {
                 project_pending_request* reg = new project_pending_request(entries,
                                                                            x,
-                                                                           [this](int x, int y){
+                                                                           [&](int x, int y){
                                                                                 pending_time += x;
                                                                                 accepted_time += y;
                                                                                 updateTime();
+                                                                                base->updateTotalTime();
                                                                             },
                                                                             this);
                 pending_time += entries->time;

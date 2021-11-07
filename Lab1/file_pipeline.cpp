@@ -24,13 +24,22 @@ file_name::file_name(const QString& m_path):
             date += m_path[i];
         }
     }
-    LOG_THROW_ERROR_IF("Incorrect file name", m_name.size() == 0, fileError, fileError::IncorrectFileName);
-    LOG_THROW_ERROR_IF("Incorrect file name", date.size() == 0, fileError, fileError::IncorrectFileName);
+    LOG_THROW_ERROR_IF("Incorrect file name file : " + m_path.toStdString(), m_name.size() == 0, fileError, fileError::IncorrectFileName);
+    LOG_THROW_ERROR_IF("Incorrect file name file : " + m_path.toStdString(), date.size() == 0, fileError, fileError::IncorrectFileName);
     date.remove(".json");
     QDate m_date = QDate::fromString(date, "yyyy-MM");
-    LOG_THROW_ERROR_IF("Could not create date", !m_date.isValid(), fileError, fileError::IncorrectFileName);
-    year = m_date.year();
-    month = m_date.month();
+    QDate m_date2 = QDate::fromString(date, "yyyy-M");
+    LOG_THROW_ERROR_IF("Could not create date file : " + m_path.toStdString(), !m_date.isValid() && !m_date2.isValid(), fileError, fileError::IncorrectFileName);
+    if(m_date.isValid())
+    {
+        year = m_date.year();
+        month = m_date.month();
+    }
+    else
+    {
+        year = m_date2.year();
+        month = m_date2.month();
+    }
     isInit = true;
 }
 file_name::file_name(const file_name& x):
@@ -157,7 +166,7 @@ bool file::removeEntrie(std::shared_ptr<TOOLS::entries> in)
     return false;
 }
 
-bool file::isFileFrozen() const
+bool file::isSubmited() const
 {
     return isFrozen;
 }
@@ -165,6 +174,15 @@ bool file::isFileFrozen() const
 void file::modifyFile()
 {
     isModified = true;
+}
+
+void file::submitFile()
+{
+    if(!isFrozen)
+    {
+        isFrozen = true;
+        isModified = true;
+    }
 }
 
 std::list<std::shared_ptr<TOOLS::entries>> file::getEntries()

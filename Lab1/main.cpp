@@ -5,7 +5,8 @@
 
 int main(int argc, char *argv[])
 {
-    MEP::LOG_SETUP::Verbose::add("files_pipeline.cpp", 10);
+    //MEP::LOG_SETUP::Verbose::add("files_pipeline.cpp", 10);
+    MEP::LOG_SETUP::Verbose::add("mainwindow.cpp", 10);
     /*
     MEP::LOG_SETUP::Verbose::add("login.h", 1);
     MEP::LOG_SETUP::Verbose::add("user.h", 10);

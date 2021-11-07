@@ -17,6 +17,33 @@ public:
     std::shared_ptr<file> add_or_find(const QString& user, int year, int month);
     std::shared_ptr<file> find(const QString& user, int year, int month);
     std::list<std::shared_ptr<file>> getFileList();
+    template<typename Fun>
+    void foreachAccepted(Fun fun);
+    template<typename Fun>
+    void foreachEntries(Fun fun);
 };
 
+template<typename Fun>
+void files_pipeline::foreachAccepted(Fun fun)
+{
+    foreach(std::shared_ptr<file> file, m_files)
+    {
+        foreach(std::shared_ptr<TOOLS::accepted> accep, file.get()->getAccepted())
+        {
+            fun(accep, file);
+        }
+    }
+}
+
+template<typename Fun>
+void files_pipeline::foreachEntries(Fun fun)
+{
+    foreach(std::shared_ptr<file> file, m_files)
+    {
+        foreach(std::shared_ptr<TOOLS::entries> accep, file.get()->getEntries())
+        {
+            fun(accep, file);
+        }
+    }
+}
 #endif // FILES_PIPELINE_H

@@ -20,9 +20,16 @@ your_project::~your_project()
     delete ui;
 }
 
-void your_project::on_pushButton_2_released()
+void your_project::on_reports_released()
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     project_reports report(m_activity, m_base);
     report.exec();
+}
+
+
+void your_project::on_edit_released()
+{
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
 }
 

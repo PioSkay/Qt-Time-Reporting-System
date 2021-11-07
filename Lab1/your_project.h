@@ -21,7 +21,8 @@ public:
     ~your_project();
 
 private slots:
-    void on_pushButton_2_released();
+    void on_reports_released();
+    void on_edit_released();
 
 private:
     Ui::your_project *ui;

@@ -44,9 +44,12 @@ SOURCES += \
         mainwindow.cpp \
         project_pending_request.cpp \
         project_reports.cpp \
+        request_data.cpp \
+        request_report.cpp \
         subactivities_container.cpp \
         user.cpp \
         users.cpp \
+        view_tempo.cpp \
         your_project.cpp \
         your_tempo.cpp
 
@@ -70,9 +73,12 @@ HEADERS += \
         mainwindow.h \
         project_pending_request.h \
         project_reports.h \
+        request_data.h \
+        request_report.h \
         subactivities_container.h \
         user.h \
         users.h \
+        view_tempo.h \
         your_project.h \
         your_tempo.h
 
@@ -85,6 +91,9 @@ FORMS += \
         mainwindow.ui \
         project_pending_request.ui \
         project_reports.ui \
+        request_data.ui \
+        request_report.ui \
         subactivities_container.ui \
+        view_tempo.ui \
         your_project.ui \
         your_tempo.ui

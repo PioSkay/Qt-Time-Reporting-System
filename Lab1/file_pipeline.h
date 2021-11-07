@@ -47,8 +47,9 @@ public:
     bool addEntries(const TOOLS::entries& in);
     bool addAccepted(const TOOLS::accepted& in);
     bool removeEntrie(std::shared_ptr<TOOLS::entries> in);
-    bool isFileFrozen() const;
+    bool isSubmited() const;
     void modifyFile();
+    void submitFile();
     std::list<std::shared_ptr<TOOLS::entries>> getEntries();
     std::list<std::shared_ptr<TOOLS::accepted>> getAccepted();
     bool operator==(const file& in) const;
