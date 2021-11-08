@@ -7,8 +7,8 @@ request_data::request_data(const QString& code, int pending, int accepted, QWidg
 {
     ui->setupUi(this);
     ui->code->setText(code);
-    ui->pending->setText(QString::number(pending));
-    ui->accepted->setText(QString::number(accepted));
+    ui->pending->setText(QString::number(pending) + QString(" min"));
+    ui->accepted->setText(QString::number(accepted) + QString(" min"));
 }
 
 request_data::~request_data()

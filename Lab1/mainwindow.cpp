@@ -19,18 +19,16 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     Log(3) << __FUNCTION__ << ", " << __LINE__;
     ui->setupUi(this);
-    /*login_window.exec();
+    login_window.exec();
     if(!login_window.isLoggedIn())
     {
-        //Passing the close event because the user is not auth.
         QTimer::singleShot(0, this, SLOT(close()));
     }
-    else*/
+    else
     {
-        current_user = User("11");// login_window.loggedUser();
+        current_user = login_window.loggedUser();
         initJSON(login_window.getUsers().getUsers());
         init();
-        //debug();
     }
 }
 
@@ -60,9 +58,9 @@ void MainWindow::init()
         }
     }
     QDate date = ui->calendarWidget->selectedDate();
-    update_temp(date.year(), date.month(), date.day());
+    MainWindow::update_temp(date.year(), date.month(), date.day());
     submitButton(date.year(), date.month());
-    updateTotalTime();
+    MainWindow::updateTotalTime();
 }
 
 void MainWindow::addActivityToMainScreen(std::shared_ptr<TOOLS::activities> in)
@@ -113,10 +111,12 @@ void MainWindow::update_temp(int year, int month, int day)
     if(array)
     {
         getFiles().get()->foreachEntries([this, day, month](auto ele, auto fi){
-            if(ele.get()->date.day() == day && ele.get()->date.month() == month)
+            if(ele.get()->date.day() == day &&
+               ele.get()->date.month() == month &&
+               fi->owner() == getUser().username())
             {
-                Log(Info) << day;
-                your_tempo* widget = new your_tempo(this, ele, fi, fi->isSubmited());
+                Log(Info) << "Presentation";
+                your_tempo* widget = new your_tempo(this, ele, fi, fi->isSubmited(), this);
                 ui->activities->widget()->layout()->addWidget(widget);
             }
         });
@@ -126,11 +126,13 @@ void MainWindow::update_temp(int year, int month, int day)
 void MainWindow::updateTotalTime()
 {
     int totalTime = 0;
-    getFiles().get()->foreachAccepted([&totalTime](auto in, auto fi){
-       totalTime += in.get()->time;
+    getFiles().get()->foreachAccepted([&totalTime, this](auto in, auto fi){
+        if(fi->owner() == getUser().username())
+            totalTime += in.get()->time;
     });
-    getFiles().get()->foreachEntries([&totalTime](auto in, auto fi){
-       totalTime += in.get()->time;
+    getFiles().get()->foreachEntries([&totalTime, this](auto in, auto fi){
+        if(fi->owner() == getUser().username())
+            totalTime += in.get()->time;
     });
     ui->totaltime->setText("Total work time: " + QString::number(totalTime) + " min");
 }
@@ -223,6 +225,7 @@ void MainWindow::on_calendarWidget_currentPageChanged(int year, int month)
 
 void MainWindow::on_request_report_released()
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     std::shared_ptr<file> m_file = getFiles()->find(getUser().username(), current_year, current_month);
     if(m_file.get() == nullptr)
     {
@@ -230,7 +233,6 @@ void MainWindow::on_request_report_released()
     }
     else
     {
-        Log(3) << "Data";
         request_report report(m_file);
         report.exec();
     }

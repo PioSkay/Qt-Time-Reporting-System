@@ -22,6 +22,7 @@ public:
                                      std::shared_ptr<file> file,
                                      std::function<void(int, int)> todo,
                                      QWidget *parent = nullptr);
+    void disable();
     ~project_pending_request();
 
 private slots:

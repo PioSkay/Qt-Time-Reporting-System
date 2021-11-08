@@ -1,6 +1,5 @@
 #include "your_tempo.h"
 #include "ui_your_tempo.h"
-#include "error_msg.h"
 #include "view_tempo.h"
 #include "add_time.h"
 
@@ -24,6 +23,7 @@ your_tempo::your_tempo(Base* base,
     } else {
         THROW_DEFAULT(true, "Incorrect input parameters in ");
     }
+    connect(ui->edit, &QPushButton::released, this, &your_tempo::on_edit_released);
     if(isFrozen)
     {
         ui->gridLayout->removeWidget(ui->edit);
@@ -35,8 +35,6 @@ your_tempo::~your_tempo()
 {
     delete ui;
 }
-
-
 
 void your_tempo::on_edit_released()
 {

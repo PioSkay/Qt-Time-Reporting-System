@@ -12,6 +12,7 @@ class activities_pipeline
 public:
     activities_pipeline();
     void init();
+    void modify();
     const std::list<std::shared_ptr<TOOLS::activities>>& getArray() const;
     const JSONReader& getJSONReader() const;
     std::shared_ptr<TOOLS::activities> addActivities(const TOOLS::activities& obj);

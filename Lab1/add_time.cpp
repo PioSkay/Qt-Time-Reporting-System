@@ -75,7 +75,7 @@ add_time::~add_time()
 }
 void add_time::on_project_currentIndexChanged(const QString &arg1)
 {
-    Log(Error) << __FUNCTION__ << ", " << __LINE__ << ", " << arg1.toStdString();
+    Log(3) << __FUNCTION__ << ", " << __LINE__ << ", " << arg1.toStdString();
     setSubactivity(arg1);
 }
 
@@ -97,6 +97,7 @@ void add_time::on_log_released()
                                                                        ui->date->date().month());
         THROW_DEFAULT(!m_file->addEntries(x),
                       "This month is submitted!");
+        m_base->updateTotalTime();
         m_base->update_temp();
         close();
     }

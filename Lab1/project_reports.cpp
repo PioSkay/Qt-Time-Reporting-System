@@ -3,15 +3,22 @@
 #include "project_pending_request.h"
 #include "accepted.h"
 
-project_reports::project_reports(std::shared_ptr<TOOLS::activities> activity, Base* base, QWidget *parent) :
+project_reports::project_reports(std::shared_ptr<TOOLS::activities> activity, Base* base, std::function<void()> fun, QWidget *parent) :
     QDialog(parent),
     m_base(base),
     m_activity(activity),
     pending_time(0),
     accepted_time(0),
+    notifyParent(fun),
     ui(new Ui::project_reports)
 {
+    Log(3) << __FUNCTION__ << " " << __LINE__;
     ui->setupUi(this);
+    if(!activity.get()->active)
+    {
+        ui->frame_5->layout()->removeWidget(ui->close_project);
+        delete ui->close_project;
+    }
     QVBoxLayout* layout = new QVBoxLayout();
     ui->pending->widget()->setLayout(layout);
 
@@ -29,7 +36,7 @@ project_reports::project_reports(std::shared_ptr<TOOLS::activities> activity, Ba
         {
             if(entries->code == activity->code)
             {
-                project_pending_request* reg = new project_pending_request(entries,
+                pending_data.emplace_back(new project_pending_request(entries,
                                                                            x,
                                                                            [&](int x, int y){
                                                                                 pending_time += x;
@@ -37,9 +44,13 @@ project_reports::project_reports(std::shared_ptr<TOOLS::activities> activity, Ba
                                                                                 updateTime();
                                                                                 base->updateTotalTime();
                                                                             },
-                                                                            this);
+                                                                            this));
+                if(!activity.get()->active)
+                {
+                    pending_data.back().get()->disable();
+                }
                 pending_time += entries->time;
-                ui->pending->widget()->layout()->addWidget(reg);
+                ui->pending->widget()->layout()->addWidget(pending_data.back().get());
             }
         }
         std::list<std::shared_ptr<TOOLS::accepted>> acc_list = x.get()->getAccepted();
@@ -55,7 +66,7 @@ project_reports::project_reports(std::shared_ptr<TOOLS::activities> activity, Ba
 }
 void project_reports::removeItem(QWidget* item)
 {
-    Log(Info) << __FUNCTION__ << " " << __LINE__;
+    Log(3) << __FUNCTION__ << " " << __LINE__;
     if(item)
     {
         ui->pending->widget()->layout()->removeWidget(item);
@@ -64,17 +75,35 @@ void project_reports::removeItem(QWidget* item)
 }
 void project_reports::updateTime()
 {
+    Log(3) << __FUNCTION__ << " " << __LINE__;
     ui->pending_time->setText(QString::number(pending_time));
     ui->accepted_time->setText(QString::number(accepted_time));
 }
 
 project_reports::~project_reports()
 {
+    Log(3) << __FUNCTION__ << " " << __LINE__;
     delete ui;
 }
 
 void project_reports::on_pushButton_2_released()
 {
+    Log(3) << __FUNCTION__ << " " << __LINE__;
     close();
+}
+
+
+void project_reports::on_close_project_released()
+{
+    Log(3) << __FUNCTION__ << " " << __LINE__;
+    m_activity->active = false;
+    m_base->getActivities().modify();
+    notifyParent();
+    ui->frame_5->layout()->removeWidget(ui->close_project);
+    delete ui->close_project;
+    for(auto& x : pending_data)
+    {
+        x.get()->disable();
+    }
 }
 

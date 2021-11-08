@@ -18,11 +18,11 @@ class your_project : public QWidget
     Base* m_base;
 public:
     explicit your_project(std::shared_ptr<TOOLS::activities> activity, Base* base, QWidget *parent = nullptr);
+    void update();
     ~your_project();
 
 private slots:
     void on_reports_released();
-    void on_edit_released();
 
 private:
     Ui::your_project *ui;

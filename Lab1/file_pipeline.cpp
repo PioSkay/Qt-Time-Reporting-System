@@ -2,10 +2,13 @@
 
 file_name::file_name():
     isInit(false)
-{}
+{
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
+}
 file_name::file_name(const QString& m_path):
     isInit(false)
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     QString date;
     bool b = false;
     for(int i = 0; i < m_path.size(); i++)
@@ -47,25 +50,32 @@ file_name::file_name(const file_name& x):
     year(x.year),
     month(x.month),
     isInit(x.isInit)
-{}
+{
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
+}
+
 file_name::file_name(const QString& in, int y, int m)
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     m_name = in;
     year = y;
     month = m;
 }
 bool file_name::operator==(const file_name& in) const
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     return m_name == in.m_name && year == in.year && month == in.month;
 }
 QString file_name::toString() const
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     return m_name + "-" + QString::number(year) + "-" + QString::number(month) + ".json";
 }
 
 
 void file::initExisting()
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     const auto& obj = m_json.getObject();
     const auto& frozen = obj.value("frozen");
     const auto& ent = obj.value("entries");
@@ -73,7 +83,7 @@ void file::initExisting()
     LOG_THROW_ERROR_IF("Could not find frozen", !frozen.isString(), fileError, fileError::CouldNotFindFrozen);
     LOG_THROW_ERROR_IF("Could not find entries", !ent.isArray(), fileError, fileError::CouldNotFindEntries);
     LOG_THROW_ERROR_IF("Could not find accepted", !acc.isArray(), fileError, fileError::CouldNotFindAccepted);
-    Log(1) << "Entry check ok: " << __FUNCTION__ << ", " << __LINE__;
+    Log(1) << "Entry check ok: " << __FUNCTION__ << ", " << __LINE__ <<", File: " << m_data.toString().toStdString();
     isFrozen = (frozen.toString() == "True" || frozen.toString() == "true" ? true : false);
     auto array = ent.toArray();
     TOOLS::setup<TOOLS::entries>(array, formated_entries);
@@ -99,12 +109,14 @@ file::file(const QString& path, const file_name& name, bool create):
 }
 QJsonObject file::toJSONObject() const
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     QJsonObject obj;
     obj["frozen"] = (isFrozen == true ? "True" : "False");
     obj["entries"] = TOOLS::toArray<TOOLS::entries>(formated_entries);
     obj["accepted"] = TOOLS::toArray<TOOLS::accepted>(formated_accepted);
     return obj;
 }
+
 bool file::addEntries(const QJsonObject& in)
 {
     if(!isFrozen)
@@ -119,11 +131,13 @@ bool file::addEntries(const QJsonObject& in)
 }
 bool file::addAccepted(const QJsonObject& in)
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     return add<TOOLS::accepted>(formated_accepted, in);
 }
 
 bool file::addEntries(const TOOLS::entries& in)
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     if(!isFrozen)
     {
         isModified = true;
@@ -139,21 +153,15 @@ bool file::addEntries(const TOOLS::entries& in)
 
 bool file::addAccepted(const TOOLS::accepted& in)
 {
-    if(!isFrozen)
-    {
-        isModified = true;
-        formated_accepted.emplace_back(std::make_shared<TOOLS::accepted>(std::move(in)));
-        return true;
-    }
-    else
-    {
-        Log(Error) << "File: " << m_json.getPath().toStdString() << ", is frozen";
-        return false;
-    }
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
+    isModified = true;
+    formated_accepted.emplace_back(std::make_shared<TOOLS::accepted>(std::move(in)));
+    return true;
 }
 
 bool file::removeEntrie(std::shared_ptr<TOOLS::entries> in)
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     for(auto ele = formated_entries.begin();
         ele !=  formated_entries.end(); ++ele)
     {
@@ -168,16 +176,19 @@ bool file::removeEntrie(std::shared_ptr<TOOLS::entries> in)
 
 bool file::isSubmited() const
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     return isFrozen;
 }
 
 void file::modifyFile()
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     isModified = true;
 }
 
 void file::submitFile()
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     if(!isFrozen)
     {
         isFrozen = true;
@@ -187,26 +198,32 @@ void file::submitFile()
 
 std::list<std::shared_ptr<TOOLS::entries>> file::getEntries()
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     return formated_entries;
 }
 std::list<std::shared_ptr<TOOLS::accepted>> file::getAccepted()
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     return formated_accepted;
 }
 bool file::operator==(const file& in) const
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     return m_data == in.m_data;
 }
 bool file::operator==(const file_name& in) const
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     return m_data == in;
 }
 const QString& file::owner() const
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     return m_data.m_name;
 }
 file::~file()
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     if(isModified)
     {
         m_json.setObject(file::toJSONObject());

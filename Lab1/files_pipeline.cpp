@@ -16,6 +16,7 @@ files_pipeline::files_pipeline(const std::list<QString>& usernames):
                 try{
                     file_name file_n(dir);
                     m_files.emplace_back(std::make_shared<file>(dir, file_n));
+                    break;
                 }
                 catch(const TOOLS::Exceptions<fileError>& x)
                 {

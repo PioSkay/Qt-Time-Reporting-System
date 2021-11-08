@@ -40,6 +40,13 @@ void project_pending_request::on_adjust_released()
     }
 }
 
+void project_pending_request::disable()
+{
+    ui->gridLayout->layout()->removeWidget(ui->accept);
+    delete ui->accept;
+    ui->gridLayout->layout()->removeWidget(ui->adjust);
+    delete ui->adjust;
+}
 
 void project_pending_request::on_accept_released()
 {

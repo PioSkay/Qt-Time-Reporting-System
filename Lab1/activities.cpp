@@ -13,7 +13,7 @@ namespace TOOLS
         THROW_DEFAULT(!obj.contains("budget"), "Activity does not contain budget");
         budget = obj["budget"].toInt();
         THROW_DEFAULT(!obj.contains("active"), "Activity does not contain active");
-        active = obj["active"] == "True" || "true" ? true : false;
+        active = obj["active"] == "True" || obj["active"] == "true" ? true : false;
         THROW_DEFAULT(!obj.contains("subactivities"), "Activity does not contain subactivities");
         if(obj["subactivities"].isArray()) {
             const auto& sub = obj["subactivities"].toArray();

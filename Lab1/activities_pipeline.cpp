@@ -16,6 +16,12 @@ void activities_pipeline::init()
         Log(Info) << "Could not read any activities!";
     }
 }
+
+void activities_pipeline::modify()
+{
+    m_modified = true;
+}
+
 const std::list<std::shared_ptr<TOOLS::activities>>& activities_pipeline::getArray() const
 {
     Log(3) << __FUNCTION__ << ", " << __LINE__;

@@ -25,9 +25,8 @@ public:
                         QWidget *parent = nullptr);
     ~your_tempo();
 
-private slots:
     void on_edit_released();
-
+private slots:
     void on_view_released();
 
 private:

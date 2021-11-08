@@ -17,6 +17,9 @@ public:
     explicit request_report(std::shared_ptr<file> entr, QWidget *parent = nullptr);
     ~request_report();
 
+private slots:
+    void on_pushButton_released();
+
 private:
     Ui::request_report *ui;
 };
