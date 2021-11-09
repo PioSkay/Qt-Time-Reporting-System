@@ -42,15 +42,16 @@ project_reports::project_reports(std::shared_ptr<TOOLS::activities> activity, Ba
                                                                                 pending_time += x;
                                                                                 accepted_time += y;
                                                                                 updateTime();
-                                                                                base->updateTotalTime();
+                                                                                m_base->updateTotalTime();
+                                                                                m_base->update_temp();
                                                                             },
                                                                             this));
                 if(!activity.get()->active)
                 {
-                    pending_data.back().get()->disable();
+                    pending_data.back()->disable();
                 }
                 pending_time += entries->time;
-                ui->pending->widget()->layout()->addWidget(pending_data.back().get());
+                ui->pending->widget()->layout()->addWidget(pending_data.back());
             }
         }
         std::list<std::shared_ptr<TOOLS::accepted>> acc_list = x.get()->getAccepted();
@@ -103,7 +104,7 @@ void project_reports::on_close_project_released()
     delete ui->close_project;
     for(auto& x : pending_data)
     {
-        x.get()->disable();
+        x->disable();
     }
 }
 

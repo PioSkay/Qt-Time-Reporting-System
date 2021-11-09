@@ -30,10 +30,12 @@ project_pending_request::~project_pending_request()
 
 void project_pending_request::on_adjust_released()
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     adjust_window window(m_entrie->time);
     window.exec();
     if(window.adjusted())
     {
+        Log(3) << __FUNCTION__ << ", " << __LINE__;
         ui->time->setText(QString::number(m_entrie->time));
         m_file->modifyFile();
         m_todo(window.after - window.before, 0);
@@ -42,6 +44,7 @@ void project_pending_request::on_adjust_released()
 
 void project_pending_request::disable()
 {
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     ui->gridLayout->layout()->removeWidget(ui->accept);
     delete ui->accept;
     ui->gridLayout->layout()->removeWidget(ui->adjust);
@@ -50,10 +53,11 @@ void project_pending_request::disable()
 
 void project_pending_request::on_accept_released()
 {
-    m_todo(-ui->time->text().toInt(), ui->time->text().toInt());
+    Log(3) << __FUNCTION__ << ", " << __LINE__;
     TOOLS::accepted acc(m_entrie->code, m_entrie->time);
     m_file->removeEntrie(m_entrie);
     m_file->addAccepted(acc);
+    m_todo(-ui->time->text().toInt(), ui->time->text().toInt());
     emit sendRemoveItem(this);
 }
 

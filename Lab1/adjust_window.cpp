@@ -1,5 +1,6 @@
 #include "adjust_window.h"
 #include "ui_adjust_window.h"
+#include "Log.h"
 
 adjust_window::adjust_window(int &to_adjust, QWidget *parent) :
     QDialog(parent),
@@ -25,6 +26,7 @@ void adjust_window::on_pushButton_released()
     isAdjusted = true;
     before = m_to_adjust;
     m_to_adjust = ui->lineEdit->text().toInt();
+    Log(Info) << "Time adjusted to: " << m_to_adjust;
     after = m_to_adjust;
     close();
 }

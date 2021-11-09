@@ -8,7 +8,7 @@ Users::Users():
         const auto& x = getArray();
         for(const auto& y : x)
         {
-            users.push_back(y["username"].toString());
+            users.push_back(y[0].toString());
         }
     }
 }

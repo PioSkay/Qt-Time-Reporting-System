@@ -14,7 +14,7 @@ class project_reports : public QDialog
     Q_OBJECT
     Base* m_base;
     std::shared_ptr<TOOLS::activities> m_activity;
-    std::list<std::unique_ptr<project_pending_request>> pending_data;
+    std::list<project_pending_request*> pending_data;
     int pending_time;
     int accepted_time;
     std::function<void()> notifyParent;

@@ -12,14 +12,22 @@ add_time::add_time(Base* base, QWidget *parent, std::shared_ptr<TOOLS::entries> 
 {
     ui->setupUi(this);
     const auto& array = base->getActivities().getArray();
-    setSubactivity(array.front().get()->code);
     ui->amount->setValidator(new QIntValidator(1, 10000, this));
     ui->date->setDate(m_base->getTime());
     ui->date->setDisplayFormat("dd-MM-yyyy");
+    bool subactivSet = false;
     foreach(auto& ele, array)
     {
         if(ele.get()->active)
+        {
+            if(subactivSet == false)
+            {
+                setSubactivity(ele.get()->code);
+                subactivSet = true;
+            }
             ui->project->addItem(ele.get()->code);
+        }
+
     }
     if(entr.get() != nullptr)
     {
@@ -43,15 +51,18 @@ add_time::add_time(Base* base, QWidget *parent, std::shared_ptr<TOOLS::entries> 
         ui->amount->setText(QString::number(entr->time));
         ui->description->setText(entr->description);
     }
+    connect(ui->project, SIGNAL(currentTextChanged(const QString&)), this, SLOT(on_project_currentIndexChanged(const QString &)));
 }
 
 void add_time::setSubactivity(const QString& project, const QString& subactivity)
 {
+    Log(3) << __FUNCTION__ << " " << __LINE__;
     const auto& act = m_base->getActivities().getArray();
     foreach(const auto& ele, act)
     {
         if(ele.get()->code == project)
         {
+            Log(3) << __FUNCTION__ << " " << ele.get()->code.toStdString();
             current = ele;
             ui->subactivity1->clear();
             ui->subactivity1->addItem("");
