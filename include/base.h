@@ -15,7 +15,7 @@ protected:
     User current_user;
     void debug() const;
 public:
-    Base() = default;
+    virtual ~Base() = default;
     void initJSON(const std::list<QString>& username);
     activities_pipeline& getActivities();
     std::shared_ptr<files_pipeline> getFiles();
